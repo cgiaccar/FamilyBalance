@@ -2,6 +2,7 @@ const express = require('express'); //carichiamo express
 const fs = require('fs/promises');
 const { MongoClient } = require('mongodb');
 const jwt = require('jsonwebtoken');
+const session = require('express-session');
 
 const uri = "mongodb://mongohost";
 const app = express(); // costruiamo app
@@ -9,6 +10,10 @@ const app = express(); // costruiamo app
 app.use(express.static(`${__dirname}/public`)); // risolve la cartella public da qualsiasi request
 app.use(express.urlencoded({ extended: 'false' }));
 app.use(express.json());
+app.use(session({
+    secret: 'segreto',
+    resave: false
+}));
 
 
 function generateAccessToken(user) {
@@ -49,8 +54,9 @@ app.post('/api/auth/signin', async (req, res) => {
     }
 
     if (db_user.password === req.body.password) {
-        generateAccessToken(db_user);
-        res.redirect('/index.html');
+        //generateAccessToken(db_user);
+        req.session.user = db_user;
+        res.redirect('/api/restricted');
     } else {
         console.log(db_user.password);
         console.log(req.body.password);
@@ -70,8 +76,8 @@ function verifyAccessToken(token) {
 }
 
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = req.headers.authorization;
+    console.log(token)
 
     if (!token) {
         return res.sendStatus(401);
@@ -87,7 +93,15 @@ function authenticateToken(req, res, next) {
     next();
 }
 
-app.get('/api/restricted', authenticateToken, (req, res) => {
+function verify(req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.status(403).send("Non autenticato");
+    }
+}
+
+app.get('/api/restricted', verify, (req, res) => {
     res.json({ message: 'Welcome to the protected route!', user: req.user });
 });
 
