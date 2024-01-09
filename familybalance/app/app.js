@@ -1,33 +1,18 @@
 const express = require('express'); //carichiamo express
 const fs = require('fs/promises');
 const { MongoClient } = require('mongodb');
-const jwt = require('jsonwebtoken');
 const session = require('express-session');
 
 const uri = "mongodb://mongohost";
 const app = express(); // costruiamo app
 
 app.use(express.static(`${__dirname}/public`)); // risolve la cartella public da qualsiasi request
-app.use(express.urlencoded({ extended: 'false' }));
-app.use(express.json());
+app.use(express.urlencoded());
 app.use(session({
     secret: 'segreto',
     resave: false
 }));
 
-
-function generateAccessToken(user) {
-    const payload = {
-        username: user.username,
-        name: user.name,
-        surname: user.surname
-    };
-
-    const secret = 'secretkey';
-    const options = { expiresIn: '1h' };
-
-    return jwt.sign(payload, secret, options);
-}
 
 // Login
 app.get('/api/auth/signin', async (req, res) => {
@@ -54,55 +39,23 @@ app.post('/api/auth/signin', async (req, res) => {
     }
 
     if (db_user.password === req.body.password) {
-        //generateAccessToken(db_user);
         req.session.user = db_user;
         res.redirect('/api/restricted');
     } else {
-        console.log(db_user.password);
-        console.log(req.body.password);
         res.status(403).send("Non autenticato!");
     }
 });
-
-function verifyAccessToken(token) {
-    const secret = 'secretkey';
-
-    try {
-        const decoded = jwt.verify(token, secret);
-        return { success: true, data: decoded };
-    } catch (error) {
-        return { success: false, error: error.message };
-    }
-}
-
-function authenticateToken(req, res, next) {
-    const token = req.headers.authorization;
-    console.log(token)
-
-    if (!token) {
-        return res.sendStatus(401);
-    }
-
-    const result = verifyAccessToken(token);
-
-    if (!result.success) {
-        return res.status(403).json({ error: result.error });
-    }
-
-    req.user = result.data;
-    next();
-}
 
 function verify(req, res, next) {
     if (req.session.user) {
         next();
     } else {
-        res.status(403).send("Non autenticato");
+        res.status(403).send("Non autenticato!");
     }
 }
 
 app.get('/api/restricted', verify, (req, res) => {
-    res.json({ message: 'Welcome to the protected route!', user: req.user });
+    res.json({ message: 'Welcome to the protected route!', user: req.session.user });
 });
 
 
