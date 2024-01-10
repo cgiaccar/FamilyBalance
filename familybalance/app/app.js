@@ -51,13 +51,17 @@ app.post('/api/auth/signup', async (req, res) => {
         surname: req.body.surname
     }
 
-    const db_user = await users.collection("users").insertOne(new_user);
-
-    if (db_user) {
-        req.session.user = new_user;
-        res.redirect('/api/restricted');
-    } else {
-        res.status(403).send("Qualcosa è andato storto, riprova");
+    try {
+        const check = await users.collection("users").findOne({ username: new_user.username });
+        if (!check) { // if user doesn't exist already
+            const db_user = await users.collection("users").insertOne(new_user);
+            req.session.user = new_user;
+            res.redirect('/api/restricted');
+        } else {
+            res.status(403).send("Username già preso!");
+        }
+    } catch (error) {
+        console.log(error);
     }
 });
 
