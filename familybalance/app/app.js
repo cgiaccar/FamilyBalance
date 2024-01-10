@@ -16,12 +16,7 @@ app.use(session({
 
 // Login
 app.get('/api/auth/signin', async (req, res) => {
-    try {
-        const data = await fs.readFile(`${__dirname}/public/login.html`, { encoding: `utf8` });
-        res.send(data);
-    } catch (err) {
-        console.log(err);
-    }
+    res.sendFile(`${__dirname}/public/login.html`);
 });
 app.post('/api/auth/signin', async (req, res) => {
 
@@ -38,6 +33,36 @@ app.post('/api/auth/signin', async (req, res) => {
     }
 });
 
+
+// Register
+app.get('/api/auth/signup', async (req, res) => {
+    res.sendFile(`${__dirname}/public/register.html`);
+});
+app.post('/api/auth/signup', async (req, res) => {
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    const users = client.db("users");
+
+    const new_user = {
+        username: req.body.username,
+        password: req.body.password,
+        name: req.body.name,
+        surname: req.body.surname
+    }
+
+    const db_user = await users.collection("users").insertOne(new_user);
+
+    if (db_user) {
+        req.session.user = new_user;
+        res.redirect('/api/restricted');
+    } else {
+        res.status(403).send("Qualcosa è andato storto, riprova");
+    }
+});
+
+
+// Restricted access
 function verify(req, res, next) {
     if (req.session.user) {
         next();
@@ -47,7 +72,7 @@ function verify(req, res, next) {
 }
 
 app.get('/api/restricted', verify, (req, res) => {
-    res.json({ message: 'Welcome to the protected route!', user: req.session.user });
+    res.json({ message: 'Welcome to the protected route!', user: req.session.user.username });
 });
 
 
