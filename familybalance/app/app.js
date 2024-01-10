@@ -24,21 +24,13 @@ app.get('/api/auth/signin', async (req, res) => {
     }
 });
 app.post('/api/auth/signin', async (req, res) => {
-    /*
+
     const client = new MongoClient(uri);
     await client.connect();
     const users = client.db("users");
     const db_user = await users.collection("users").findOne({ username: req.body.username });
-    */
 
-    db_user = { //temporaneo lol
-        username: 'a',
-        password: 'a',
-        name: 'Camilla',
-        surname: 'Giaccari'
-    }
-
-    if (db_user.password === req.body.password) {
+    if (db_user && db_user.password === req.body.password) {
         req.session.user = db_user;
         res.redirect('/api/restricted');
     } else {
