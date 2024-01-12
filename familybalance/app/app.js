@@ -102,8 +102,34 @@ app.get("/api/budget/:year/:month/:id", verify, (req, res) => {
 });
 
 // POST /api/budget/:year/:month - Adding logged user's expense in the chosen year and month
-app.post("/api/budget/:year/:month", verify, (req, res) => {
-    //TODO
+app.post("/api/budget/:year/:month", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    //const users = client.db("users");
+    const expenses = client.db("expenses");
+
+    const new_expense = {   // temporary
+        date: "10-01-2024",
+        description: "Siamo andati a mangiare al ristorante",
+        category: "Cibo",
+        total_cost: 100,
+        users: {
+            cami97: 60,
+            gigi: 40
+        }
+    }
+
+    try {
+        const db_expense = await expenses.collection("expenses").insertOne(new_expense);
+        /*
+        const expense_id = db_expense._id; //.str or .toString()
+        const db_user = await users.collection("users").findOne({ username: req.session.user.username });
+        db_user.expenses.add(expense_id);
+        */
+        res.json({ message: 'You added the new expense!', expense: db_expense });
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 // PUT /api/budget/:year/:month/:id - edit logged user's expense of chosen id in the chosen year and month
