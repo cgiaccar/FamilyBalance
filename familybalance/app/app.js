@@ -1,6 +1,6 @@
 const express = require('express'); //carichiamo express
 const fs = require('fs/promises');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const session = require('express-session');
 
 const uri = "mongodb://mongohost";
@@ -102,8 +102,16 @@ app.get("/api/budget/:year/:month", verify, (req, res) => {
 });
 
 // GET /api/budget/:year/:month/:id - logged user's expense of chosen id in the chosen year and month
-app.get("/api/budget/:year/:month/:id", verify, (req, res) => {
-    //TODO
+app.get("/api/budget/:year/:month/:id", verify, async (req, res) => {
+
+    let id = req.params.id;
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+    let db_expense = await expenses.collection("expenses").findOne({ "_id": new ObjectId(id) });
+    res.json(db_expense);
 });
 
 // POST /api/budget/:year/:month - Adding logged user's expense in the chosen year and month
