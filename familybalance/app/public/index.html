@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Family Balance</title>
+        <script src="assets/js/app.js" defer></script>
         <style>
             * {
                 font-family: 'Courier New', Courier, monospace;
@@ -17,5 +18,12 @@
             <input type="submit" value="Add test expense!"/>
         </form>
         <a href="/api/auth/signin">Login!</a>
+        <table id="expenses_table">
+            <tr>
+                <th>Data</th>
+                <th>Categoria</th>
+                <th>Costo totale</th>
+            </tr>
+        </table>
     </body>
 </html>

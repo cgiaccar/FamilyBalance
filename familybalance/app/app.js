@@ -27,7 +27,7 @@ app.post('/api/auth/signin', async (req, res) => {
 
     if (db_user && db_user.password === req.body.password) {
         req.session.user = db_user;
-        res.redirect('/api/restricted');
+        res.redirect('/');
     } else {
         res.status(403).send("Non autenticato!");
     }
@@ -82,8 +82,13 @@ app.get('/api/restricted', verify, (req, res) => {
 
 
 // GET /api/budget/ - logged user's expenses
-app.get("/api/budget", verify, (req, res) => {
-    //TODO
+app.get("/api/budget", verify, async (req, res) => {
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+    res.json(await expenses.collection("expenses").find().toArray())
 });
 
 // GET /api/budget/:year - logged user's expenses in the chosen year
