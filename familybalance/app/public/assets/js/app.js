@@ -11,7 +11,7 @@ function addExpense(expense) {
     const category = document.createElement("td");
     const total_cost = document.createElement("td");
     const a = document.createElement("a");
-    a.href = `/api/budget/2024/01/${expense._id}`;
+    a.href = `/budget/2024/01/${expense._id}`;
     a.innerText = expense.date;
     date.appendChild(a);
     category.innerText = expense.category;

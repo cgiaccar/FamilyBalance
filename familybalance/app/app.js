@@ -34,8 +34,8 @@ app.post('/api/auth/signin', async (req, res) => {
 });
 
 
-// Register
-app.get('/api/auth/signup', async (req, res) => {
+// Register 
+app.get('/api/auth/signup', async (req, res) => {   //should it be an api?
     res.sendFile(`${__dirname}/public/register.html`);
 });
 app.post('/api/auth/signup', async (req, res) => {
@@ -102,6 +102,14 @@ app.get("/api/budget/:year/:month", verify, (req, res) => {
 });
 
 // GET /api/budget/:year/:month/:id - logged user's expense of chosen id in the chosen year and month
+app.get("/budget/:year/:month/:id", verify, async (req, res) => {
+    try {
+        const data = await fs.readFile(`${__dirname}/public/expense.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (err) {
+        console.log(err);
+    }
+});
 app.get("/api/budget/:year/:month/:id", verify, async (req, res) => {
 
     let id = req.params.id;
