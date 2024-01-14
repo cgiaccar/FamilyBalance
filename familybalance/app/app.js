@@ -2,6 +2,7 @@ const express = require('express'); //carichiamo express
 const fs = require('fs/promises');
 const { MongoClient, ObjectId } = require('mongodb');
 const session = require('express-session');
+const { error } = require('console');
 
 const uri = "mongodb://mongohost";
 const app = express(); // costruiamo app
@@ -154,8 +155,24 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
 });
 
 // PUT /api/budget/:year/:month/:id - edit logged user's expense of chosen id in the chosen year and month
-app.put("/api/budget/:year/:month/:id", verify, (req, res) => {
-    //TODO
+app.put("/api/budget/:year/:month/:id", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+    const filter = { _id: new ObjectId(req.params.id) };
+    const updateOnExpense = {
+        $set: {
+            description: "It's the FINAL COUNTDOWN PARAPAPPAPA"
+        }
+    }
+
+    try {
+        await expenses.collection("expenses").updateOne(filter, updateOnExpense);
+    }
+    catch (error) {
+        console.log(error);
+    }
 });
 
 // DELETE /api/budget/:year/:month/:id - remove logged user's expense of chosen id in the chosen year and month

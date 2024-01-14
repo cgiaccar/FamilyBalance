@@ -1,7 +1,11 @@
 const url = window.location.href;
 const parts = url.split("/");
 const id = parts[parts.length - 1]
-getExpense(id).then(expense => {
+const month = parts[parts.length - 2]
+const year = parts[parts.length - 3]
+
+
+getExpense().then(expense => {
     console.log(expense);
     const table = document.querySelector("#expense_table");
     const tr = document.createElement("tr");
@@ -26,8 +30,17 @@ getExpense(id).then(expense => {
     tr.appendChild(users);
 });
 
-async function getExpense(id) {
+async function getExpense() {
     const response = await fetch(`/api/budget/2024/01/${id}`);
     const expense = await response.json();
     return expense;
+}
+
+async function modifyExpense() {
+    try {
+        await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'PUT' });
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
