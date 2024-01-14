@@ -44,3 +44,12 @@ async function modifyExpense() {
         console.log(error);
     }
 }
+
+async function deleteExpense() {
+    try {
+        await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'DELETE' });
+    }
+    catch (error) {
+        console.log(error);
+    }
+}

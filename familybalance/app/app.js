@@ -176,8 +176,14 @@ app.put("/api/budget/:year/:month/:id", verify, async (req, res) => {
 });
 
 // DELETE /api/budget/:year/:month/:id - remove logged user's expense of chosen id in the chosen year and month
-app.delete("/api/budget/:year/:month/:id", verify, (req, res) => {
-    //TODO
+app.delete("/api/budget/:year/:month/:id", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+    const id = req.params.id;
+
+    await expenses.collection("expenses").deleteOne({ "_id": new ObjectId(id) });
 });
 
 // GET /api/balance - visualize give/take summary of logged user
