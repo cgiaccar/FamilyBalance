@@ -31,7 +31,7 @@ getExpense().then(expense => {
 });
 
 async function getExpense() {
-    const response = await fetch(`/api/budget/2024/01/${id}`);
+    const response = await fetch(`/api/budget/${year}/${month}/${id}`);
     const expense = await response.json();
     return expense;
 }
