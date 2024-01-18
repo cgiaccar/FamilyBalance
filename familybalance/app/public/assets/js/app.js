@@ -6,6 +6,16 @@ getExpenses().then(expenses => {
     });
 });
 
+function getYear(date) {
+    const parts = date.split("-");
+    return parts[2];
+}
+
+function getMonth(date) {
+    const parts = date.split("-");
+    return parts[1];
+}
+
 // Show a single expense in the big table
 function addExpense(expense) {
     const table = document.querySelector("#expenses_table");
@@ -14,7 +24,9 @@ function addExpense(expense) {
     const category = document.createElement("td");
     const total_cost = document.createElement("td");
     const a = document.createElement("a");
-    a.href = `/budget/2024/01/${expense._id}`;
+    const year = getYear(expense.date);
+    const month = getMonth(expense.date);
+    a.href = `/budget/${year}/${month}/${expense._id}`;
     a.innerText = expense.date;
     date.appendChild(a);
     category.innerText = expense.category;
