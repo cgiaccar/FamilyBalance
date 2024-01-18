@@ -89,7 +89,12 @@ app.get("/api/budget", verify, async (req, res) => {
     await client.connect();
     const expenses = client.db("expenses");
 
-    res.json(await expenses.collection("expenses").find().toArray())
+    // Filter on logged user
+    const username = req.session.user.username;
+    let query = {};
+    query['users.' + username] = { $exists: true };
+
+    res.json(await expenses.collection("expenses").find(query).toArray())
 });
 
 // GET /api/budget/:year - logged user's expenses in the chosen year
@@ -137,7 +142,6 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
         category: "Cibo",
         total_cost: 100,
         users: {
-            cami97: 60,
             gigi: 40
         }
     }
