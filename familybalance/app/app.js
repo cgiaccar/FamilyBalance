@@ -1,13 +1,13 @@
-const express = require('express'); //carichiamo express
+const express = require('express'); //Load express
 const fs = require('fs/promises');
 const { MongoClient, ObjectId } = require('mongodb');
 const session = require('express-session');
 const { error } = require('console');
 
 const uri = "mongodb://mongohost";
-const app = express(); // costruiamo app
+const app = express(); // Create app
 
-app.use(express.static(`${__dirname}/public`)); // risolve la cartella public da qualsiasi request
+app.use(express.static(`${__dirname}/public`)); // Solves from public folder from any request
 app.use(express.urlencoded());
 app.use(session({
     secret: 'segreto',
@@ -216,4 +216,4 @@ app.get("/api/users/search?q=query", verify, (req, res) => {
     //TODO //needs verify?
 });
 
-app.listen(3000); //ascoltiamo su porta 3000
+app.listen(3000); //Listen on port 3000

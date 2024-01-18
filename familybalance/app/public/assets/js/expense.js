@@ -4,7 +4,7 @@ const id = parts[parts.length - 1]
 const month = parts[parts.length - 2]
 const year = parts[parts.length - 3]
 
-
+// Show single expense in its table (page to modify and delete, expense.html)
 getExpense().then(expense => {
     console.log(expense);
     const table = document.querySelector("#expense_table");
@@ -30,12 +30,14 @@ getExpense().then(expense => {
     tr.appendChild(users);
 });
 
+// Takes a single expense using api
 async function getExpense() {
     const response = await fetch(`/api/budget/${year}/${month}/${id}`);
     const expense = await response.json();
     return expense;
 }
 
+// Calls modify/put from api
 async function modifyExpense() {
     try {
         await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'PUT' });
@@ -45,6 +47,7 @@ async function modifyExpense() {
     }
 }
 
+// Calls delete from api
 async function deleteExpense() {
     try {
         await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'DELETE' });

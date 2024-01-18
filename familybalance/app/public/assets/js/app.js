@@ -1,9 +1,12 @@
+// Show all expenses in the big table (index.html)
+// Takes expenses and for each one shows it
 getExpenses().then(expenses => {
     expenses.forEach(expense => {
         addExpense(expense);
     });
 });
 
+// Show a single expense in the big table
 function addExpense(expense) {
     const table = document.querySelector("#expenses_table");
     const tr = document.createElement("tr");
@@ -22,6 +25,7 @@ function addExpense(expense) {
     tr.appendChild(total_cost);
 }
 
+// Takes all user's expenses using api
 async function getExpenses() {
     const response = await fetch("/api/budget");
     const expenses = await response.json();
