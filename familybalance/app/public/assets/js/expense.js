@@ -6,7 +6,6 @@ const year = parts[parts.length - 3]
 
 // Show single expense in its table (page to modify and delete, expense.html)
 getExpense().then(expense => {
-    console.log(expense);
     const table = document.querySelector("#expense_table");
     const tr = document.createElement("tr");
     const date = document.createElement("td");

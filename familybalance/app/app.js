@@ -28,7 +28,7 @@ app.post('/api/auth/signin', async (req, res) => {
 
     if (db_user && db_user.password === req.body.password) {
         req.session.user = db_user;
-        res.redirect('/');
+        res.redirect('/budget/whoami');
     } else {
         res.status(403).send("Non autenticato!");
     }
@@ -57,7 +57,7 @@ app.post('/api/auth/signup', async (req, res) => {
         if (!check) { // if user doesn't exist already
             const db_user = await users.collection("users").insertOne(new_user);
             req.session.user = new_user;
-            res.redirect('/api/restricted');
+            res.redirect('/budget/whoami');
         } else {
             res.status(403).send("Username già preso!");
         }
@@ -76,12 +76,6 @@ function verify(req, res, next) {
     }
 }
 
-// Temporaneo
-app.get('/api/restricted', verify, (req, res) => {
-    res.json({ message: 'Welcome to the protected route!', user: req.session.user.username });
-});
-
-
 // GET /api/budget/ - logged user's expenses
 app.get("/api/budget", verify, async (req, res) => {
 
@@ -95,6 +89,22 @@ app.get("/api/budget", verify, async (req, res) => {
     query['users.' + username] = { $exists: true };
 
     res.json(await expenses.collection("expenses").find(query).toArray())
+});
+
+// GET /api/budget/whoami - if authenticated, returns logged user's info
+// Must be before /api/budget/:year or "whoami" will be interpreted as a possible year and the flow will go there
+app.get("/api/budget/whoami", verify, async (req, res) => {
+    const user = req.session.user;
+    res.json(user);
+});
+// Actually fetches the whoami.html page
+app.get("/budget/whoami", verify, async (req, res) => {
+    try {
+        const data = await fs.readFile(`${__dirname}/public/whoami.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 // GET /api/budget/:year - logged user's expenses in the chosen year
@@ -203,11 +213,6 @@ app.get("/api/balance/:id", verify, (req, res) => {
 
 // GET /api/budget/search?q=query - search expense that matches the query string
 app.get("/api/budget/search?q=query", verify, (req, res) => {
-    //TODO
-});
-
-// GET /api/budget/whoami - if authenticated, returns logged user's info
-app.get("/api/budget/whoami", verify, (req, res) => {
     //TODO
 });
 
