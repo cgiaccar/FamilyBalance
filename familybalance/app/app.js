@@ -1,4 +1,5 @@
 const express = require('express'); //Load express
+const bodyParser = require('body-parser');
 const fs = require('fs/promises');
 const { MongoClient, ObjectId } = require('mongodb');
 const session = require('express-session');
@@ -9,6 +10,10 @@ const app = express(); // Create app
 
 app.use(express.static(`${__dirname}/public`)); // Solves from public folder from any request
 app.use(express.urlencoded());
+
+app.use(bodyParser.json()); // Parse incoming requests with JSON payloads
+app.use(bodyParser.urlencoded({ extended: true })); // Parse incoming requests with URL-encoded payloads
+
 app.use(session({
     secret: 'segreto',
     resave: false
@@ -141,31 +146,36 @@ app.get("/budget/:year/:month/:id", verify, async (req, res) => {
 
 // POST /api/budget/:year/:month - Adding logged user's expense in the chosen year and month
 app.post("/api/budget/:year/:month", verify, async (req, res) => {
+
     const client = new MongoClient(uri);
     await client.connect();
-    //const users = client.db("users");
     const expenses = client.db("expenses");
 
-    const new_expense = {   // temporary
-        date: "10-01-2024",
-        description: "Siamo andati a mangiare al ristorante",
-        category: "Cibo",
-        total_cost: 100,
+    const new_expense = {
+        date: req.body.date,
+        description: req.body.description,
+        category: req.body.category,
+        total_cost: req.body.total_cost,
         users: {
+            cami97: 60,
             gigi: 40
         }
     }
 
     try {
         const db_expense = await expenses.collection("expenses").insertOne(new_expense);
-        /*
-        const expense_id = db_expense._id; //.str or .toString()
-        const db_user = await users.collection("users").findOne({ username: req.session.user.username });
-        db_user.expenses.add(expense_id);
-        */
-        res.json({ message: 'You added the new expense!', expense: db_expense });
+        res.status(201).json({ id: db_expense.insertedId });
     } catch (error) {
         console.log(error);
+    }
+});
+// Actually fetches the newExpense.html page
+app.get("/budget/add", verify, async (req, res) => {
+    try {
+        const data = await fs.readFile(`${__dirname}/public/newExpense.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (err) {
+        console.log(err);
     }
 });
 

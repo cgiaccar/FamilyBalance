@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Aggiungi una spesa</title>
+        <script src="../assets/js/addExpense.js" defer></script>
+    </head>
+    <body>
+        <h1>Aggiungi una spesa</h1>
+        <form id="new_expense_form">
+        <label for="date">Data:</label>
+        <input type="text" id="date" name="date" /><br /><br />
+        <label for="description">Descrizione:</label>
+        <input type="text" id="description" name="description" /><br /><br />
+        <label for="category">Categoria:</label>
+        <input type="text" id="category" name="category" /><br /><br />
+        <label for="total_cost">Costo totale:</label>
+        <input type="text" id="total_cost" name="total_cost" /><br /><br />
+        <button type="submit">Aggiungi</button>
+        </form>
+        <div id="error_message"></div>
+        <a href="/">Home!</a>
+    </body>
+</html>
