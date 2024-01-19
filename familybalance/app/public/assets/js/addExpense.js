@@ -3,7 +3,7 @@ const errorMessage = document.getElementById('error_message');
 
 function getYear(date) {
     const parts = date.split("-");
-    return parts[2];
+    return parts[0];
 }
 
 function getMonth(date) {
