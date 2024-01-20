@@ -1,5 +1,5 @@
 const form = document.getElementById('new_expense_form');
-const errorMessage = document.getElementById('error_message');
+const feedback = document.getElementById('feedback');
 
 function getYear(date) {
     const parts = date.split("-");
@@ -32,10 +32,10 @@ form.addEventListener('submit', async (event) => {
         body: JSON.stringify({ date, description, category, total_cost }),
     });
     if (!response.ok) {
-        errorMessage.textContent = 'Aggiunta di dati fallita!';
+        feedback.textContent = 'Aggiunta di dati fallita!';
         return;
     } else {
-        errorMessage.textContent = 'Spesa aggiunta con successo!'
+        feedback.textContent = 'Spesa aggiunta con successo!'
         return;
     }
 });

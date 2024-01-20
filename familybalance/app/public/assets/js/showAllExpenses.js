@@ -8,12 +8,17 @@ getExpenses().then(expenses => {
 
 function getYear(date) {
     const parts = date.split("-");
-    return parts[2];
+    return parts[0];
 }
 
 function getMonth(date) {
     const parts = date.split("-");
     return parts[1];
+}
+
+function getDay(date) {
+    const parts = date.split("-");
+    return parts[2];
 }
 
 // Show a single expense in the big table
@@ -26,8 +31,9 @@ function addExpense(expense) {
     const a = document.createElement("a");
     const year = getYear(expense.date);
     const month = getMonth(expense.date);
+    const day = getDay(expense.date);
     a.href = `/budget/${year}/${month}/${expense._id}`;
-    a.innerText = expense.date;
+    a.innerText = day + "-" + month + "-" + year;
     date.appendChild(a);
     category.innerText = expense.category;
     total_cost.innerText = expense.total_cost;

@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const fs = require('fs/promises');
 const { MongoClient, ObjectId } = require('mongodb');
 const session = require('express-session');
-const { error } = require('console');
 
 const uri = "mongodb://mongohost";
 const app = express(); // Create app
@@ -15,7 +14,7 @@ app.use(bodyParser.json()); // Parse incoming requests with JSON payloads
 app.use(bodyParser.urlencoded({ extended: true })); // Parse incoming requests with URL-encoded payloads
 
 app.use(session({
-    secret: 'segreto',
+    secret: 'my_biggest_secret',
     resave: false
 }));
 
@@ -163,8 +162,8 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
     }
 
     try {
-        const db_expense = await expenses.collection("expenses").insertOne(new_expense);
-        res.status(201).json({ id: db_expense.insertedId });
+        await expenses.collection("expenses").insertOne(new_expense);
+        res.status(201).json(); // Send
     } catch (error) {
         console.log(error);
     }
