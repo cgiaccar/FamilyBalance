@@ -28,10 +28,23 @@ form.addEventListener('submit', async (event) => {
         users[name.value] = quota.value;
     });
 
+    // Date must be set
     if (!date) {
-        errorMessage.textContent = 'Per favore, inserire una data';
+        feedback.textContent = 'Per favore, inserire una data';
         return;
     }
+
+    // Sum of quotas must be = total cost
+    let sum = 0;
+    quotas.forEach(quota => {
+        sum = sum + parseFloat(quota.value);
+    })
+    if (total_cost != sum) {
+        feedback.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
+        return;
+    }
+
+    // Fetch api to add new expense
     const year = getYear(date);
     const month = getMonth(date);
     const response = await fetch(`/api/budget/${year}/${month}`, {
@@ -41,6 +54,8 @@ form.addEventListener('submit', async (event) => {
         },
         body: JSON.stringify({ date, description, category, total_cost, users }),
     });
+
+    // Feedback from database
     if (!response.ok) {
         feedback.textContent = 'Aggiunta di dati fallita!';
         return;
