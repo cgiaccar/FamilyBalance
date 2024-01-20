@@ -1,5 +1,4 @@
 const form = document.getElementById('new_expense_form');
-const feedback = document.getElementById('feedback');
 
 function getYear(date) {
     const parts = date.split("-");
@@ -14,18 +13,22 @@ function getMonth(date) {
 // At submit, takes data and fetches api
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
+    const feedback = document.getElementById('feedback');
+
     const date = document.getElementById('date').value.trim();
     const description = document.getElementById('description').value.trim();
     const category = document.getElementById('category').value.trim();
     const total_cost = document.getElementById('total_cost').value.trim();
 
     const names = document.querySelectorAll('.name'); //All elements of class 'name'
-    const quotas = document.querySelectorAll('.quota'); //All elements of class 'part'
+    const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
     // Create and fill users object
     let users = {};
     names.forEach((name, index) => {
         let quota = quotas[index];
-        users[name.value] = quota.value;
+        if (quota.value) {  // If the value is filled
+            users[name.value] = quota.value;
+        }
     });
 
     // Date must be set
@@ -37,7 +40,9 @@ form.addEventListener('submit', async (event) => {
     // Sum of quotas must be = total cost
     let sum = 0;
     quotas.forEach(quota => {
-        sum = sum + parseFloat(quota.value);
+        if (quota.value) {  // If the value is filled
+            sum = sum + parseFloat(quota.value);
+        }
     })
     if (total_cost != sum) {
         feedback.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
@@ -66,25 +71,46 @@ form.addEventListener('submit', async (event) => {
 });
 
 
+// Recursive event listener to add new user
+quota1.addEventListener('click', function () { addUser(2) }, { once: true });
 
-/* part1.on('change', function () {
-    createNext(2);
-});
+function addUser(i) {
+    const users = document.getElementById('users');
 
-function createNext(index) {
+    // Create div user_i
+    const newUser = document.createElement("div");
+    newUser.setAttribute("id", "user" + i);
 
-    if ($('#part' + index).length == 0) {
-        // create the next text box if not exists
-        const next = $('<input>', {
-            id: 'part' + index,
-            type: 'text',
-            name: 'part' + index
-        });
+    // Create label and input for name_i
+    const nameLabel = document.createElement("label");
+    nameLabel.setAttribute("for", "name" + i);
+    nameLabel.innerHTML = "Utente: ";
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.setAttribute("id", "name" + i);
+    nameInput.setAttribute("name", "name" + i);
+    nameInput.setAttribute("class", "name");
 
-        next.on('change', function () {
-            createNext(index + 1)
-        });
-        next.appendTo(users);
-    }
+    // Create label and input for quota_i
+    const quotaLabel = document.createElement("label");
+    quotaLabel.setAttribute("for", "quota" + i);
+    quotaLabel.innerHTML = " Spesa: ";
+    const quotaInput = document.createElement("input");
+    quotaInput.type = "number";
+    quotaInput.setAttribute("step", "0.01");
+    quotaInput.setAttribute("id", "quota" + i);
+    quotaInput.setAttribute("name", "quota" + i);
+    quotaInput.setAttribute("class", "quota");
+    // Add recursive event listener
+    quotaInput.addEventListener('click', function () { addUser(i + 1) }, { once: true });
+
+    const br = document.createElement("br");
+
+    newUser.appendChild(nameLabel);
+    newUser.appendChild(nameInput);
+    newUser.appendChild(quotaLabel);
+    newUser.appendChild(quotaInput);
+
+    users.appendChild(newUser)
+    users.appendChild(br);
 }
- */
