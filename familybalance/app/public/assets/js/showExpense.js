@@ -4,6 +4,11 @@ const id = parts[parts.length - 1]
 const month = parts[parts.length - 2]
 const year = parts[parts.length - 3]
 
+function getDay(date) {
+    const divided = date.split("-");
+    return divided[2];
+}
+
 // Show single expense in its table (page to modify and delete, expense.html)
 getExpense().then(expense => {
     const table = document.querySelector("#expense_table");
@@ -13,7 +18,7 @@ getExpense().then(expense => {
     const category = document.createElement("td");
     const total_cost = document.createElement("td");
     const users = document.createElement("td");
-    date.innerText = expense.date;
+    date.innerText = getDay(expense.date) + "-" + month + "-" + year;;
     description.innerText = expense.description;
     category.innerText = expense.category;
     total_cost.innerText = expense.total_cost;
