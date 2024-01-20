@@ -1,5 +1,12 @@
 const form = document.getElementById('new_expense_form');
 
+// Fill user1 with default values (logged user and total cost)
+getUser().then(user => {
+    const name1 = document.getElementById('name1');
+    name1.setAttribute("value", user.username);
+    // TODO add total value in quota1
+});
+
 function getYear(date) {
     const parts = date.split("-");
     return parts[0];
@@ -71,7 +78,7 @@ form.addEventListener('submit', async (event) => {
 });
 
 
-// Recursive event listener to add new user
+// Recursive event listener to add new users
 quota1.addEventListener('click', function () { addUser(2) }, { once: true });
 
 function addUser(i) {
@@ -113,4 +120,11 @@ function addUser(i) {
 
     users.appendChild(newUser)
     users.appendChild(br);
+}
+
+// Takes the user info using api
+async function getUser() {
+    const response = await fetch("/api/budget/whoami");
+    const user = await response.json();
+    return user;
 }
