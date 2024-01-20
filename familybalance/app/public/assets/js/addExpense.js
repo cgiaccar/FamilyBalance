@@ -1,26 +1,22 @@
-// Fill user1 with default values (logged user and total cost)
+// Useful elements
+const form = document.getElementById('new_expense_form');   // The form
+const total_cost_el = document.getElementById('total_cost');    // Total cost of the new expense
+const quota1 = document.getElementById('quota1');   // Quota of the first user
+
+
+// Fill user1 with default values (name = logged user, quota = total cost = 0)
 getUser().then(user => {
     const name1 = document.getElementById('name1');
     name1.setAttribute("value", user.username);
+    total_cost_el.setAttribute("value", 0);
+    quota1.setAttribute("value", 0);
 });
-const total_cost_el = document.getElementById('total_cost');
+
+// Always copy total cost in quota1
 total_cost_el.addEventListener('input', () => {
-    // Copy total cost in quota1
-    const quota1 = document.getElementById('quota1');
     quota1.setAttribute("value", total_cost_el.value);
 });
 
-function getYear(date) {
-    const parts = date.split("-");
-    return parts[0];
-}
-
-function getMonth(date) {
-    const parts = date.split("-");
-    return parts[1];
-}
-
-const form = document.getElementById('new_expense_form');
 
 // At submit, takes data and fetches api
 form.addEventListener('submit', async (event) => {
@@ -38,7 +34,7 @@ form.addEventListener('submit', async (event) => {
     let users = {};
     names.forEach((name, index) => {
         let quota = quotas[index];
-        if (quota.value) {  // If the value is filled
+        if (quota.value && name.value) {  // If the values are filled
             users[name.value] = quota.value;
         }
     });
@@ -55,7 +51,7 @@ form.addEventListener('submit', async (event) => {
         if (quota.value) {  // If the value is filled
             sum = sum + parseFloat(quota.value);
         }
-    })
+    });
     if (total_cost != sum) {
         feedback.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
         return;
@@ -126,6 +122,18 @@ function addUser(i) {
     users.appendChild(newUser)
     users.appendChild(br);
 }
+
+
+// Utility functions to format date
+function getYear(date) {
+    const parts = date.split("-");
+    return parts[0];
+}
+function getMonth(date) {
+    const parts = date.split("-");
+    return parts[1];
+}
+
 
 // Takes the user info using api
 async function getUser() {
