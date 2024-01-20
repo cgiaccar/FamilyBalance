@@ -1,10 +1,13 @@
-const form = document.getElementById('new_expense_form');
-
 // Fill user1 with default values (logged user and total cost)
 getUser().then(user => {
     const name1 = document.getElementById('name1');
     name1.setAttribute("value", user.username);
-    // TODO add total value in quota1
+});
+const total_cost_el = document.getElementById('total_cost');
+total_cost_el.addEventListener('input', () => {
+    // Copy total cost in quota1
+    const quota1 = document.getElementById('quota1');
+    quota1.setAttribute("value", total_cost_el.value);
 });
 
 function getYear(date) {
@@ -17,6 +20,8 @@ function getMonth(date) {
     return parts[1];
 }
 
+const form = document.getElementById('new_expense_form');
+
 // At submit, takes data and fetches api
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -25,7 +30,7 @@ form.addEventListener('submit', async (event) => {
     const date = document.getElementById('date').value.trim();
     const description = document.getElementById('description').value.trim();
     const category = document.getElementById('category').value.trim();
-    const total_cost = document.getElementById('total_cost').value.trim();
+    const total_cost = total_cost_el.value.trim();
 
     const names = document.querySelectorAll('.name'); //All elements of class 'name'
     const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
