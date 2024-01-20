@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Aggiungi una spesa</title>
-        <script src="../assets/js/addExpense.js" defer></script>
-    </head>
-    <body>
-        <h1>Aggiungi una spesa</h1>
-        <form id="new_expense_form">
+
+<head>
+    <title>Aggiungi una spesa</title>
+    <script src="../assets/js/addExpense.js" defer></script>
+</head>
+
+<body>
+    <h1>Aggiungi una spesa</h1>
+    <form id="new_expense_form">
         <label for="date">Data:</label>
         <input type="date" id="date" name="date" /><br /><br />
         <label for="description">Descrizione:</label>
@@ -15,9 +17,26 @@
         <input type="text" id="category" name="category" /><br /><br />
         <label for="total_cost">Costo totale:</label>
         <input type="number" step="0.01" id="total_cost" name="total_cost" /><br /><br />
+        <div id="users">
+            <div id="user1">
+                <label for="name1">Utente:</label>
+                <input type="text" id="name1" name="name1" class="name" />
+                <label for="quota1">Spesa:</label>
+                <input type="number" step="0.01" id="quota1" name="quota1" class="quota" />
+            </div>
+            <br />
+            <div id="user2">
+                <label for="name2">Utente:</label>
+                <input type="text" id="name2" name="name2" class="name" />
+                <label for="quota2">Spesa:</label>
+                <input type="number" step="0.01" id="quota2" name="quota2" class="quota" />
+            </div>
+            <br /><br />
+        </div>
         <button type="submit">Aggiungi</button>
-        </form>
-        <div id="feedback"></div>
-        <a href="/">Home!</a>
-    </body>
+    </form>
+    <div id="feedback"></div>
+    <a href="/">Home!</a>
+</body>
+
 </html>

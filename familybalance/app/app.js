@@ -155,10 +155,7 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
         description: req.body.description,
         category: req.body.category,
         total_cost: req.body.total_cost,
-        users: {
-            cami97: 60,
-            gigi: 40
-        }
+        users: req.body.users
     }
 
     try {
