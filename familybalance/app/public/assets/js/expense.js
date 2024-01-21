@@ -3,6 +3,7 @@ const parts = url.split("/");
 const id = parts[parts.length - 1]
 const month = parts[parts.length - 2]
 const year = parts[parts.length - 3]
+deleteButton = document.getElementById('delete_button');
 
 function getDay(date) {
     const divided = date.split("-");
@@ -52,11 +53,21 @@ async function modifyExpense() {
 }
 
 // Calls delete from api
-async function deleteExpense() {
-    try {
-        await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'DELETE' });
+deleteButton.addEventListener("click", async (event) => {
+    event.preventDefault();
+    let result = window.confirm("Sei sicuro di voler eliminare la spesa?");
+    if (result) {
+        try {
+            const response = await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                alert("Spesa eliminata con successo!");
+                window.location.replace("/");
+            } else {
+                alert("Qualcosa è andato storto, eliminazione fallita.")
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
-    catch (error) {
-        console.log(error);
-    }
-}
+});

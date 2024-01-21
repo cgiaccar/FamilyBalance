@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Family Balance</title>
-        <script src="../../../assets/js/showExpense.js" defer></script>
-    </head>
-    <body>
-        <table id="expense_table">
-            <tr>
-                <th>Data</th>
-                <th>Descrizione</th>
-                <th>Categoria</th>
-                <th>Costo totale</th>
-                <th>Utenti</th>
-            </tr>
-        </table>
-        <form id="modify_form" action="javascript:modifyExpense()">
-            <input type="submit" value="Modifica"/>
-        </form>
-        <form id="delete_form" action="javascript:deleteExpense()">
-            <input type="submit" value="Elimina"/>
-        </form>
-    </body>
+
+<head>
+    <title>Family Balance</title>
+    <script src="../../../assets/js/expense.js" defer></script>
+</head>
+
+<body>
+    <table id="expense_table">
+        <tr>
+            <th>Data</th>
+            <th>Descrizione</th>
+            <th>Categoria</th>
+            <th>Costo totale</th>
+            <th>Utenti</th>
+        </tr>
+    </table>
+    <form id="modify_form" action="javascript:modifyExpense()">
+        <input type="submit" value="Modifica" />
+    </form>
+    <button id="delete_button">Elimina</button>
+    <br />
+    <a href="/">Home</a>
+</body>
+
 </html>

@@ -160,9 +160,10 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
 
     try {
         await expenses.collection("expenses").insertOne(new_expense);
-        res.status(201).json(); // Send
+        res.status(201).json(); // Send ok status
     } catch (error) {
         console.log(error);
+        res.status(500).json(); // Send server error status
     }
 });
 // Actually fetches the newExpense.html page
@@ -203,8 +204,13 @@ app.delete("/api/budget/:year/:month/:id", verify, async (req, res) => {
     const expenses = client.db("expenses");
 
     const id = req.params.id;
-
-    await expenses.collection("expenses").deleteOne({ "_id": new ObjectId(id) });
+    try {
+        await expenses.collection("expenses").deleteOne({ "_id": new ObjectId(id) });
+        res.status(201).json(); // Send ok status
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(); // Send server error status
+    }
 });
 
 // GET /api/balance - visualize give/take summary of logged user
