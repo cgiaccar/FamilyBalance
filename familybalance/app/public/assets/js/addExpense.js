@@ -80,8 +80,18 @@ form.addEventListener('submit', async (event) => {
 
 
 // Recursive event listener to add new users
-quota1.addEventListener('input', function () { addUser(2) }, { once: true });
+quota1.addEventListener('input', function () { addUserWithTrigger(2) }, { once: true });
 
+// Calls addUser and then adds the event listener
+function addUserWithTrigger(i) {
+    addUser(i);
+    // Add recursive event listener
+    document.getElementById('quota' + i).addEventListener('input', function () {
+        addUserWithTrigger(i + 1);
+    }, { once: true });
+}
+
+// Adds a new user to the form
 function addUser(i) {
     const users = document.getElementById('users');
 
@@ -109,8 +119,6 @@ function addUser(i) {
     quotaInput.setAttribute("id", "quota" + i);
     quotaInput.setAttribute("name", "quota" + i);
     quotaInput.setAttribute("class", "quota");
-    // Add recursive event listener
-    quotaInput.addEventListener('click', function () { addUser(i + 1) }, { once: true });
 
     const br = document.createElement("br");
 

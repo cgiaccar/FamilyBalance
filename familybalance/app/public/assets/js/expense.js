@@ -60,13 +60,12 @@ getExpense().then(expense => {
         addUser(i);
         // Fill the new user and remove event listener
         document.getElementById('name' + i).setAttribute("value", user);
-        let quota_i = document.getElementById('quota' + i);
-        quota_i.setAttribute("value", expense.users[user]);
-        //quota_i.removeEventListener('input', function () { addUser(i + 1) });
+        document.getElementById('quota' + i).setAttribute("value", expense.users[user]);
     });
     // Add an empty user at the end
-    addUser(i + 1);
+    addUserWithTrigger(i + 1);
 });
+
 
 // Takes a single expense using api
 async function getExpense() {
@@ -142,6 +141,14 @@ modifyForm.addEventListener("submit", async (event) => {
     }
 });
 
+// Calls addUser and then adds the event listener (same as addExpense)
+function addUserWithTrigger(i) {
+    addUser(i);
+    document.getElementById('quota' + i).addEventListener('input', function () {
+        addUserWithTrigger(i + 1);
+    }, { once: true });
+}
+
 // Adds a new user to the modify_form (same as addExpense)
 function addUser(i) {
     const users = document.getElementById('users');
@@ -170,8 +177,6 @@ function addUser(i) {
     quotaInput.setAttribute("id", "quota" + i);
     quotaInput.setAttribute("name", "quota" + i);
     quotaInput.setAttribute("class", "quota");
-    // Add recursive event listener
-    quotaInput.addEventListener('input', function () { addUser(i + 1) }, { once: true });
 
     const br = document.createElement("br");
 
