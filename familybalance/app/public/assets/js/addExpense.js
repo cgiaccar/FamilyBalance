@@ -80,7 +80,7 @@ form.addEventListener('submit', async (event) => {
 
 
 // Recursive event listener to add new users
-quota1.addEventListener('click', function () { addUser(2) }, { once: true });
+quota1.addEventListener('input', function () { addUser(2) }, { once: true });
 
 function addUser(i) {
     const users = document.getElementById('users');

@@ -183,17 +183,23 @@ app.put("/api/budget/:year/:month/:id", verify, async (req, res) => {
     const expenses = client.db("expenses");
 
     const filter = { _id: new ObjectId(req.params.id) };
-    const updateOnExpense = {
+    const updateExpense = {
         $set: {
-            description: "It's the FINAL COUNTDOWN PARAPAPPAPA"
+            date: req.body.date,
+            description: req.body.description,
+            category: req.body.category,
+            total_cost: req.body.total_cost,
+            users: req.body.users
         }
-    }
+    };
 
     try {
-        await expenses.collection("expenses").updateOne(filter, updateOnExpense);
+        await expenses.collection("expenses").updateOne(filter, updateExpense);
+        res.status(201).json(); // Send ok status
     }
     catch (error) {
         console.log(error);
+        res.status(500).json(); // Send server error status
     }
 });
 
