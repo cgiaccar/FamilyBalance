@@ -92,7 +92,7 @@ app.get("/api/budget", verify, async (req, res) => {
     let query = {};
     query['users.' + username] = { $exists: true };
 
-    res.json(await expenses.collection("expenses").find(query).toArray())
+    res.json(await expenses.collection("expenses").find(query).toArray());
 });
 
 // GET /api/budget/whoami - if authenticated, returns logged user's info
@@ -112,13 +112,34 @@ app.get("/budget/whoami", verify, async (req, res) => {
 });
 
 // GET /api/budget/:year - logged user's expenses in the chosen year
-app.get("/api/budget/:year", verify, (req, res) => {
-    //TODO
+app.get("/api/budget/:year", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+    const username = req.session.user.username;
+    const year = req.params.year;
+    let query = {};
+    query['users.' + username] = { $exists: true }; // Filter on logged user
+    query["date"] = { $regex: `${year}` }; // Filter on selected year
+
+    res.json(await expenses.collection("expenses").find(query).toArray());
 });
 
 // GET /api/budget/:year/:month - logged user's expenses in the chosen year and month
-app.get("/api/budget/:year/:month", verify, (req, res) => {
-    //TODO
+app.get("/api/budget/:year/:month", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+    const username = req.session.user.username;
+    const year = req.params.year;
+    const month = req.params.month
+    let query = {};
+    query['users.' + username] = { $exists: true }; // Filter on logged user
+    query["date"] = { $regex: `${year}-${month}` }; // Filter on selected year and month
+
+    res.json(await expenses.collection("expenses").find(query).toArray());
 });
 
 // GET /api/budget/:year/:month/:id - logged user's expense of chosen id in the chosen year and month

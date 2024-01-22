@@ -1,27 +1,57 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Family Balance</title>
-        <script src="assets/js/showAllExpenses.js" defer></script>
-        <style>
-            * {
-                font-family: 'Courier New', Courier, monospace;
-                color: blueviolet;
-                font-style: italic;
-                font-size: large;
-            }
-        </style>
-    </head>
-    <body>
-       <h1> Hello World!!!</h1>
-        <a href="/api/auth/signin">Login!</a>
-        <a href="/budget/add">Aggiungi spesa!</a>
-        <table id="expenses_table">
+
+<head>
+    <title>Family Balance</title>
+    <script src="assets/js/showAllExpenses.js" defer></script>
+    <style>
+        * {
+            font-family: 'Courier New', Courier, monospace;
+            color: blueviolet;
+            font-style: italic;
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+    <h1> Hello World!!!</h1>
+    <a href="/api/auth/signin">Login!</a>
+    <a href="/budget/add">Aggiungi spesa!</a>
+    <br />
+    <form id="filter_form">
+        <select name="input_year" id="input_year">
+            <option value="">--- Seleziona un anno ---</option>
+        </select>
+        <select name="input_month" id="input_month">
+            <option value="">--- Seleziona un mese ---</option>
+            <option value="01">Gennaio</option>
+            <option value="02">Febbraio</option>
+            <option value="03">Marzo</option>
+            <option value="04">Aprile</option>
+            <option value="05">Maggio</option>
+            <option value="06">Giugno</option>
+            <option value="07">Luglio</option>
+            <option value="08">Agosto</option>
+            <option value="09">Settembre</option>
+            <option value="10">Ottobre</option>
+            <option value="11">Novembre</option>
+            <option value="12">Dicembre</option>
+        </select>
+        <button type="submit">Filtra!</button>
+    </form>
+    <table id="expenses_table">
+        <thead>
             <tr>
                 <th>Data</th>
                 <th>Categoria</th>
                 <th>Costo totale</th>
             </tr>
-        </table>
-    </body>
+        </thead>
+        <tbody id="expenses_table_body">
+
+        </tbody>
+    </table>
+</body>
+
 </html>

@@ -1,3 +1,8 @@
+// Useful elements
+const tableBody = document.getElementById('expenses_table_body');
+const filterForm = document.getElementById('filter_form');
+const yearSelector = document.getElementById('input_year');
+
 // Show all expenses in the big table (index.html)
 // Takes expenses and for each one shows it
 getExpenses().then(expenses => {
@@ -6,16 +11,23 @@ getExpenses().then(expenses => {
     });
 });
 
+// Fill year selector
+for (i = 1990; i < 2025; i++) {
+    let option = document.createElement("option")
+    option.value = i;
+    option.innerText = i;
+    yearSelector.appendChild(option);
+}
+
+// Utility functions to format date
 function getYear(date) {
     const parts = date.split("-");
     return parts[0];
 }
-
 function getMonth(date) {
     const parts = date.split("-");
     return parts[1];
 }
-
 function getDay(date) {
     const parts = date.split("-");
     return parts[2];
@@ -23,7 +35,6 @@ function getDay(date) {
 
 // Show a single expense in the big table
 function addExpense(expense) {
-    const table = document.querySelector("#expenses_table");
     const tr = document.createElement("tr");
     const date = document.createElement("td");
     const category = document.createElement("td");
@@ -37,15 +48,52 @@ function addExpense(expense) {
     date.appendChild(a);
     category.innerText = expense.category;
     total_cost.innerText = expense.total_cost;
-    table.appendChild(tr);
+    tableBody.appendChild(tr);
     tr.appendChild(date);
     tr.appendChild(category);
     tr.appendChild(total_cost);
 }
 
+// Clear table and then show all expenses of the chosen year and month
+filterForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    tableBody.innerHTML = "";
+    const year = yearSelector.value;
+    const month = document.getElementById('input_month').value;
+    if (!month) {
+        getExpensesYear(year).then(expenses => {
+            expenses.forEach(expense => {
+                addExpense(expense);
+            });
+        });
+    }
+    else {
+        getExpensesYearMonth(year, month).then(expenses => {
+            expenses.forEach(expense => {
+                addExpense(expense);
+            });
+        });
+    }
+});
+
+
 // Takes all user's expenses using api
 async function getExpenses() {
     const response = await fetch("/api/budget");
+    const expenses = await response.json();
+    return expenses;
+}
+
+// Takes all user's expenses in the year using api
+async function getExpensesYear(year) {
+    const response = await fetch(`/api/budget/${year}`);
+    const expenses = await response.json();
+    return expenses;
+}
+
+// Takes all user's expenses in year and month using api
+async function getExpensesYearMonth(year, month) {
+    const response = await fetch(`/api/budget/${year}/${month}`);
     const expenses = await response.json();
     return expenses;
 }
