@@ -136,6 +136,12 @@ modifyForm.addEventListener("submit", async (event) => {
         return;
     }
 
+    // Can't have a refund with more than 2 users or a single user
+    if (total_cost === "0" && Object.keys(users).length !== 2) {
+        feedback.textContent = 'Per favore, indicare esattamente due utenti per un rimborso';
+        return;
+    }
+
     // Sum of quotas must be = total cost
     let sum = 0;
     quotas.forEach(quota => {

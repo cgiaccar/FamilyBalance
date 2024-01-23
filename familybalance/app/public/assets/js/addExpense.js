@@ -4,12 +4,10 @@ const total_cost_el = document.getElementById('total_cost');    // Total cost of
 const quota1 = document.getElementById('quota1');   // Quota of the first user
 
 
-// Fill user1 with default values (name = logged user, quota = total cost = 0)
+// Fill user1 with default value  name = logged user
 getUser().then(user => {
     const name1 = document.getElementById('name1');
     name1.setAttribute("value", user.username);
-    total_cost_el.setAttribute("value", 0);
-    quota1.setAttribute("value", 0);
 });
 
 // Always copy total cost in quota1
@@ -42,6 +40,12 @@ form.addEventListener('submit', async (event) => {
     // Date must be set
     if (!date) {
         feedback.textContent = 'Per favore, inserire una data';
+        return;
+    }
+
+    // Can't have a refund with more than 2 users or a single user
+    if (total_cost === "0" && Object.keys(users).length !== 2) {
+        feedback.textContent = 'Per favore, indicare esattamente due utenti per un rimborso';
         return;
     }
 
