@@ -14,9 +14,30 @@ getUser().then(user => {
     tr.appendChild(surname);
 });
 
+getBalance().then(balance => {
+    const table = document.querySelector("#balance_table");
+    Object.keys(balance).forEach(key => {
+        const tr = document.createElement("tr");
+        const debtor = document.createElement("td");
+        const amount = document.createElement("td");
+        debtor.innerText = key;
+        amount.innerText = balance[key];
+        table.appendChild(tr);
+        tr.appendChild(debtor);
+        tr.appendChild(amount);
+    });
+});
+
 // Takes the user info using api
 async function getUser() {
     const response = await fetch("/api/budget/whoami");
+    const user = await response.json();
+    return user;
+}
+
+// Takes user balance using api
+async function getBalance() {
+    const response = await fetch("/api/balance");
     const user = await response.json();
     return user;
 }

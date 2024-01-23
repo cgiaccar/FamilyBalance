@@ -242,8 +242,51 @@ app.delete("/api/budget/:year/:month/:id", verify, async (req, res) => {
 });
 
 // GET /api/balance - visualize give/take summary of logged user
-app.get("/api/balance", verify, (req, res) => {
-    //TODO
+app.get("/api/balance", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+    // Filter on logged user
+    const username = req.session.user.username;
+    let query = {};
+    query['users.' + username] = { $exists: true };
+
+    let db_expenses = await expenses.collection("expenses").find(query).toArray();
+
+    // Perform calculations
+    let balance = {};
+    db_expenses.forEach(expense => {    // for each expense
+        if (expense.total_cost === "0") {   // if it's a refund
+            Object.keys(expense.users).forEach(user => {
+                if (user !== username) {
+                    if (!balance[user]) {   // if it doesn't exist, set it to 0
+                        balance[user] = 0;
+                    }
+                    balance[user] -= parseFloat(expense.users[user]);   // pay off the refund for the other user
+                }
+            });
+        } else {    // if it's a normal expense
+            if (expense.host === username) {    // if I'm host
+                Object.keys(expense.users).forEach(user => {    // everyone
+                    if (user !== username) {    // except me
+                        if (!balance[user]) {   // if it doesn't exist, set it to 0
+                            balance[user] = 0;
+                        }
+                        balance[user] += parseFloat(expense.users[user]);   // adds their quota to their debt with me
+                    }
+                });
+            }
+            else {  // if I'm NOT host
+                if (!balance[expense.host]) {   // if it doesn't exist, set it to 0
+                    balance[expense.host] = 0;
+                }
+                balance[expense.host] -= parseFloat(expense.users[username]);   // subtract my quota from host's debt with me
+            }
+        }
+    });
+
+    res.json(balance);
 });
 
 // GET /api/balance/:id - visualize give/take summary of logged user with user of chosen id
