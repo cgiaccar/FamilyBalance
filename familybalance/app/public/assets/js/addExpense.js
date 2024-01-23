@@ -46,7 +46,7 @@ form.addEventListener('submit', async (event) => {
 
     // Logged user must always appear (if only with quota = 0)
     if (!Object.hasOwn(users, loggedName)) {
-        users.loggedName = 0;
+        users[loggedName] = 0;
     }
 
     // Can't have a refund with more than 2 users or a single user
