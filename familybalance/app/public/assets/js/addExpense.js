@@ -2,12 +2,13 @@
 const form = document.getElementById('new_expense_form');   // The form
 const total_cost_el = document.getElementById('total_cost');    // Total cost of the new expense
 const quota1 = document.getElementById('quota1');   // Quota of the first user
+let loggedName = "";     // Name of the logged user
 
-
-// Fill user1 with default value  name = logged user
+// Fill user1 with default value "name = logged user"
 getUser().then(user => {
     const name1 = document.getElementById('name1');
-    name1.setAttribute("value", user.username);
+    loggedName = user.username;
+    name1.setAttribute("value", loggedName);
 });
 
 // Always copy total cost in quota1
@@ -43,9 +44,14 @@ form.addEventListener('submit', async (event) => {
         return;
     }
 
+    // Logged user must always appear (if only with quota = 0)
+    if (!Object.hasOwn(users, loggedName)) {
+        users.loggedName = 0;
+    }
+
     // Can't have a refund with more than 2 users or a single user
     if (total_cost === "0" && Object.keys(users).length !== 2) {
-        feedback.textContent = 'Per favore, indicare esattamente due utenti per un rimborso';
+        feedback.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per un rimborso';
         return;
     }
 

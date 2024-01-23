@@ -136,9 +136,14 @@ modifyForm.addEventListener("submit", async (event) => {
         return;
     }
 
+    // Logged user must always appear (if only with quota = 0)
+    if (!Object.hasOwn(users, loggedName)) {
+        users.loggedName = 0;
+    }
+
     // Can't have a refund with more than 2 users or a single user
     if (total_cost === "0" && Object.keys(users).length !== 2) {
-        feedback.textContent = 'Per favore, indicare esattamente due utenti per un rimborso';
+        feedback.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per un rimborso';
         return;
     }
 
