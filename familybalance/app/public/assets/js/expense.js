@@ -4,10 +4,12 @@ const parts = url.split("/");
 const id = parts[parts.length - 1]
 const month = parts[parts.length - 2]
 const year = parts[parts.length - 3]
-deleteButton = document.getElementById('delete_button');
-modifyButton = document.getElementById('modify_button');
-modifyForm = document.getElementById('modify_form');
-feedback = document.getElementById('feedback');
+const deleteButton = document.getElementById('delete_button');
+const modifyButton = document.getElementById('modify_button');
+const modifyForm = document.getElementById('modify_form');
+const feedback = document.getElementById('feedback');
+let loggedUsername = "";
+let hostUsername = "";
 
 // Utility functions to format date
 function getDay(date) {
@@ -23,8 +25,9 @@ function getMonth(date) {
     return parts[1];
 }
 
-// Show single expense in its table (page to modify and delete, expense.html)
-// and fill the modify_form (hidden at the beginning)
+// Show single expense in its table (page to modify and delete, expense.html),
+// fill the modify_form (hidden at the beginning)
+// and set the visibility of modify/delete buttons
 getExpense().then(expense => {
     const table = document.querySelector("#expense_table");
     const tr = document.createElement("tr");
@@ -33,6 +36,7 @@ getExpense().then(expense => {
     const category = document.createElement("td");
     const total_cost = document.createElement("td");
     const users = document.createElement("td");
+    const host = document.createElement("td");
     date.innerText = getDay(expense.date) + "-" + month + "-" + year;
     description.innerText = expense.description;
     category.innerText = expense.category;
@@ -41,12 +45,14 @@ getExpense().then(expense => {
     Object.keys(expense.users).forEach(property => { //users is an object with a property named after each user with their quota
         users.innerText += property + ": " + expense.users[property] + "\n ";
     })
+    host.innerText = expense.host;
     table.appendChild(tr);
     tr.appendChild(date);
     tr.appendChild(description);
     tr.appendChild(category);
     tr.appendChild(total_cost);
     tr.appendChild(users);
+    tr.appendChild(host);
 
     // Fill the modify_form
     document.getElementById('date').setAttribute("value", expense.date);
@@ -64,7 +70,18 @@ getExpense().then(expense => {
     });
     // Add an empty user at the end
     addUserWithTrigger(i + 1);
+
+    // Get user info and set visibility of modify/delete buttons
+    getUser().then(user => {
+        loggedUsername = user.username;
+        hostUsername = expense.host;
+        if (loggedUsername === hostUsername) {
+            deleteButton.style.display = "";
+            modifyButton.style.display = "";
+        }
+    });
 });
+
 
 
 // Takes a single expense using api
@@ -72,6 +89,13 @@ async function getExpense() {
     const response = await fetch(`/api/budget/${year}/${month}/${id}`);
     const expense = await response.json();
     return expense;
+}
+
+// Takes the user info using api
+async function getUser() {
+    const response = await fetch("/api/budget/whoami");
+    const user = await response.json();
+    return user;
 }
 
 // Makes the modify_form visible
@@ -84,6 +108,11 @@ modifyButton.addEventListener("click", (event) => {
 modifyForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const feedback = document.getElementById('feedback');
+
+    if (loggedUsername !== hostUsername) {
+        feedback.textContent = 'Non puoi modificare questa spesa!';
+        return;
+    }
 
     const date = document.getElementById('date').value.trim();
     const description = document.getElementById('description').value.trim();
@@ -193,6 +222,12 @@ function addUser(i) {
 // Calls delete from api
 deleteButton.addEventListener("click", async (event) => {
     event.preventDefault();
+
+    if (loggedUsername !== hostUsername) {
+        feedback.textContent = 'Non puoi eliminare questa spesa!';
+        return;
+    }
+
     let result = window.confirm("Sei sicuro di voler eliminare la spesa?");
     if (result) {
         try {
