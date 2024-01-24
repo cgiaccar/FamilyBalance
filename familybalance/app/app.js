@@ -19,12 +19,8 @@ app.use(session({
 }));
 
 
-// Login
-app.get('/api/auth/signin', async (req, res) => {
-    res.sendFile(`${__dirname}/public/login.html`);
-});
+// Login - returns user if found in users db
 app.post('/api/auth/signin', async (req, res) => {
-
     const client = new MongoClient(uri);
     await client.connect();
     const users = client.db("users");
@@ -37,14 +33,14 @@ app.post('/api/auth/signin', async (req, res) => {
         res.status(403).send("Non autenticato!");
     }
 });
-
-
-// Register 
-app.get('/api/auth/signup', async (req, res) => {   //should it be an api?
-    res.sendFile(`${__dirname}/public/register.html`);
+// Actually returns the login page
+app.get('/auth/signin', async (req, res) => {
+    res.sendFile(`${__dirname}/public/login.html`);
 });
-app.post('/api/auth/signup', async (req, res) => {
 
+
+// Register - adds user in users db
+app.post('/api/auth/signup', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
     const users = client.db("users");
@@ -69,6 +65,10 @@ app.post('/api/auth/signup', async (req, res) => {
         console.log(error);
     }
 });
+// Actually returns the register page
+app.get('/auth/signup', async (req, res) => {
+    res.sendFile(`${__dirname}/public/register.html`);
+});
 
 
 // Authentication
@@ -80,9 +80,9 @@ function verify(req, res, next) {
     }
 }
 
-// GET /api/budget/ - logged user's expenses
-app.get("/api/budget", verify, async (req, res) => {
 
+// GET /api/budget/ - returns logged user's expenses as an array
+app.get("/api/budget", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
     const expenses = client.db("expenses");
@@ -95,13 +95,14 @@ app.get("/api/budget", verify, async (req, res) => {
     res.json(await expenses.collection("expenses").find(query).toArray());
 });
 
-// GET /api/budget/whoami - if authenticated, returns logged user's info
-// Must be before /api/budget/:year or "whoami" will be interpreted as a possible year and the flow will go there
+
+// GET /api/budget/whoami - if authenticated, returns logged user
+// Must be before GET /api/budget/:year or "whoami" will be interpreted as a possible year and the flow will go there
 app.get("/api/budget/whoami", verify, async (req, res) => {
     const user = req.session.user;
     res.json(user);
 });
-// Actually fetches the whoami.html page
+// Actually returns the whoami.html page
 app.get("/budget/whoami", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/whoami.html`, { encoding: `utf8` });
@@ -111,7 +112,8 @@ app.get("/budget/whoami", verify, async (req, res) => {
     }
 });
 
-// GET /api/budget/:year - logged user's expenses in the chosen year
+
+// GET /api/budget/:year - returns logged user's expenses in the specified year
 app.get("/api/budget/:year", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -126,7 +128,8 @@ app.get("/api/budget/:year", verify, async (req, res) => {
     res.json(await expenses.collection("expenses").find(query).toArray());
 });
 
-// GET /api/budget/:year/:month - logged user's expenses in the chosen year and month
+
+// GET /api/budget/:year/:month - returns logged user's expenses in the specified year and month
 app.get("/api/budget/:year/:month", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -142,9 +145,9 @@ app.get("/api/budget/:year/:month", verify, async (req, res) => {
     res.json(await expenses.collection("expenses").find(query).toArray());
 });
 
-// GET /api/budget/:year/:month/:id - logged user's expense of chosen id in the chosen year and month
-app.get("/api/budget/:year/:month/:id", verify, async (req, res) => {
 
+// GET /api/budget/:year/:month/:id - returns logged user's expense of specified id in the specified year and month
+app.get("/api/budget/:year/:month/:id", verify, async (req, res) => {
     let id = req.params.id;
 
     const client = new MongoClient(uri);
@@ -154,7 +157,7 @@ app.get("/api/budget/:year/:month/:id", verify, async (req, res) => {
     let db_expense = await expenses.collection("expenses").findOne({ "_id": new ObjectId(id) });
     res.json(db_expense);
 });
-// Actually fetches the correct expense's page
+// Actually returns the correct expense's page
 app.get("/budget/:year/:month/:id", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/expense.html`, { encoding: `utf8` });
@@ -164,9 +167,9 @@ app.get("/budget/:year/:month/:id", verify, async (req, res) => {
     }
 });
 
-// POST /api/budget/:year/:month - Adding logged user's expense in the chosen year and month
-app.post("/api/budget/:year/:month", verify, async (req, res) => {
 
+// POST /api/budget/:year/:month - adds an expense in the specified year and month
+app.post("/api/budget/:year/:month", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
     const expenses = client.db("expenses");
@@ -188,7 +191,7 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
         res.status(500).json(); // Send server error status
     }
 });
-// Actually fetches the newExpense.html page
+// Actually returns the newExpense.html page
 app.get("/budget/add", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/newExpense.html`, { encoding: `utf8` });
@@ -198,7 +201,8 @@ app.get("/budget/add", verify, async (req, res) => {
     }
 });
 
-// PUT /api/budget/:year/:month/:id - edit logged user's expense of chosen id in the chosen year and month
+
+// PUT /api/budget/:year/:month/:id - modifies the expense with specified id in the specified year and month
 app.put("/api/budget/:year/:month/:id", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -225,7 +229,8 @@ app.put("/api/budget/:year/:month/:id", verify, async (req, res) => {
     }
 });
 
-// DELETE /api/budget/:year/:month/:id - remove logged user's expense of chosen id in the chosen year and month
+
+// DELETE /api/budget/:year/:month/:id - removes the expense with specified id in the specified year and month
 app.delete("/api/budget/:year/:month/:id", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -241,7 +246,8 @@ app.delete("/api/budget/:year/:month/:id", verify, async (req, res) => {
     }
 });
 
-// GET /api/balance - visualize give/take summary of logged user
+
+// GET /api/balance - returns a give/take summary of logged user as an object
 app.get("/api/balance", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
@@ -289,20 +295,16 @@ app.get("/api/balance", verify, async (req, res) => {
     res.json(balance);
 });
 
-// GET /api/balance/:id - visualize give/take summary of logged user with another user by id
+
+// GET /api/balance/:id - returns all movements between logged user and user with specified id (username) 
 app.get("/api/balance/:id", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
     const expenses = client.db("expenses");
-    //const users = client.db("users");
-
-    // Find other user
-    //const userID = req.params.id;
-    //let db_user = await users.collection("users").findOne({ "_id": new ObjectId(userID) });
 
     // Take expenses hosted by one of the users and with both usernames
     const username = req.session.user.username;
-    const otherUsername = req.params.id;//db_user.username;
+    const otherUsername = req.params.id;
     let query = {};
     query['users.' + username] = { $exists: true };
     query['users.' + otherUsername] = { $exists: true };
@@ -310,7 +312,7 @@ app.get("/api/balance/:id", verify, async (req, res) => {
 
     res.json(await expenses.collection("expenses").find(query).toArray());
 });
-// Actually fetches the balance_id.html page
+// Actually returns the balance_id.html page
 app.get("/balance/:id", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/balance_id.html`, { encoding: `utf8` });
@@ -320,14 +322,17 @@ app.get("/balance/:id", verify, async (req, res) => {
     }
 });
 
-// GET /api/budget/search?q=query - search expense that matches the query string
+
+// GET /api/budget/search?q=query - returns all expenses that match the query string
 app.get("/api/budget/search?q=query", verify, (req, res) => {
     //TODO
 });
 
-// GET /api/users/search?q=query - searches user that matches query string
+
+// GET /api/users/search?q=query - returns all users that match the query string
 app.get("/api/users/search?q=query", verify, (req, res) => {
     //TODO //needs verify?
 });
+
 
 app.listen(3000); //Listen on port 3000
