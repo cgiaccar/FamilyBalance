@@ -20,8 +20,11 @@ getBalance().then(balance => {
         const tr = document.createElement("tr");
         const debtor = document.createElement("td");
         const amount = document.createElement("td");
-        debtor.innerText = key;
         amount.innerText = balance[key];
+        const a = document.createElement("a");
+        a.href = `/balance/${key}`;
+        a.innerText = key;
+        debtor.appendChild(a);
         table.appendChild(tr);
         tr.appendChild(debtor);
         tr.appendChild(amount);

@@ -289,9 +289,35 @@ app.get("/api/balance", verify, async (req, res) => {
     res.json(balance);
 });
 
-// GET /api/balance/:id - visualize give/take summary of logged user with user of chosen id
-app.get("/api/balance/:id", verify, (req, res) => {
-    //TODO
+// GET /api/balance/:id - visualize give/take summary of logged user with another user by id
+app.get("/api/balance/:id", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+    //const users = client.db("users");
+
+    // Find other user
+    //const userID = req.params.id;
+    //let db_user = await users.collection("users").findOne({ "_id": new ObjectId(userID) });
+
+    // Take expenses hosted by one of the users and with both usernames
+    const username = req.session.user.username;
+    const otherUsername = req.params.id;//db_user.username;
+    let query = {};
+    query['users.' + username] = { $exists: true };
+    query['users.' + otherUsername] = { $exists: true };
+    query['host'] = { $in: [username, otherUsername] };
+
+    res.json(await expenses.collection("expenses").find(query).toArray());
+});
+// Actually fetches the balance_id.html page
+app.get("/balance/:id", verify, async (req, res) => {
+    try {
+        const data = await fs.readFile(`${__dirname}/public/balance_id.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 // GET /api/budget/search?q=query - search expense that matches the query string
