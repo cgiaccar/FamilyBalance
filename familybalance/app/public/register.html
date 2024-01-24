@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Login</title>
-    </head>
-    <body>
-        <form id="register_form" action="/api/auth/signup" method="post">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" />
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password"/>
-            <label for="name">Name:</label>
-            <input type="text" name="name" id="name" />
-            <label for="surname">Surname:</label>
-            <input type="text" name="surname" id="surname" />
-            <input type="submit" value="Register"/>
-        </form>
-    </body>
+
+<head>
+    <title>Login</title>
+</head>
+
+<body>
+    <h1>Registrati</h1>
+    <form id="register_form" action="/api/auth/signup" method="post">
+        <label for="username">Nome utente:</label>
+        <input type="text" name="username" id="username" /><br /><br />
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" /><br /><br />
+        <label for="name">Nome:</label>
+        <input type="text" name="name" id="name" /><br /><br />
+        <label for="surname">Cognome:</label>
+        <input type="text" name="surname" id="surname" /><br /><br />
+        <input type="submit" value="Register" />
+    </form>
+    <br />
+    <a href="/">Home!</a>
+</body>
+
 </html>

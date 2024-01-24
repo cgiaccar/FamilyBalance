@@ -38,7 +38,7 @@ function addExpense(expense) {
     const tr = document.createElement("tr");
     const date = document.createElement("td");
     const category = document.createElement("td");
-    const total_cost = document.createElement("td");
+    const totalCost = document.createElement("td");
     const host = document.createElement("td");
     const a = document.createElement("a");
     const year = getYear(expense.date);
@@ -48,12 +48,12 @@ function addExpense(expense) {
     a.innerText = day + "-" + month + "-" + year;
     date.appendChild(a);
     category.innerText = expense.category;
-    total_cost.innerText = expense.total_cost;
+    totalCost.innerText = expense.total_cost;
     host.innerText = expense.host;
     tableBody.appendChild(tr);
     tr.appendChild(date);
     tr.appendChild(category);
-    tr.appendChild(total_cost);
+    tr.appendChild(totalCost);
     tr.appendChild(host);
 }
 

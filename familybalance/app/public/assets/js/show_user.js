@@ -1,4 +1,4 @@
-// Shows user info in its table (page whoami.html)
+// Shows user info in its table (page profile.html)
 getUser().then(user => {
     const table = document.querySelector("#user_table");
     const tr = document.createElement("tr");
@@ -41,6 +41,6 @@ async function getUser() {
 // Takes user balance using api
 async function getBalance() {
     const response = await fetch("/api/balance");
-    const user = await response.json();
-    return user;
+    const balance = await response.json();
+    return balance;
 }

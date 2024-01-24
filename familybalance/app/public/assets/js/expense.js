@@ -34,13 +34,13 @@ getExpense().then(expense => {
     const date = document.createElement("td");
     const description = document.createElement("td");
     const category = document.createElement("td");
-    const total_cost = document.createElement("td");
+    const totalCost = document.createElement("td");
     const users = document.createElement("td");
     const host = document.createElement("td");
     date.innerText = getDay(expense.date) + "-" + month + "-" + year;
     description.innerText = expense.description;
     category.innerText = expense.category;
-    total_cost.innerText = expense.total_cost;
+    totalCost.innerText = expense.total_cost;
     users.innerText = "";
     Object.keys(expense.users).forEach(property => { //users is an object with a property named after each user with their quota
         users.innerText += property + ": " + expense.users[property] + "\n ";
@@ -50,13 +50,13 @@ getExpense().then(expense => {
     tr.appendChild(date);
     tr.appendChild(description);
     tr.appendChild(category);
-    tr.appendChild(total_cost);
+    tr.appendChild(totalCost);
     tr.appendChild(users);
     tr.appendChild(host);
 
     // Fill the modify_form
     document.getElementById('date').setAttribute("value", expense.date);
-    document.getElementById('description').setAttribute("value", expense.description);
+    document.getElementById('description').innerText = expense.description;
     document.getElementById('category').setAttribute("value", expense.category);
     document.getElementById('total_cost').setAttribute("value", expense.total_cost);
     let i = 0;
@@ -117,7 +117,7 @@ modifyForm.addEventListener("submit", async (event) => {
     const date = document.getElementById('date').value.trim();
     const description = document.getElementById('description').value.trim();
     const category = document.getElementById('category').value.trim();
-    const total_cost = document.getElementById('total_cost').value.trim();
+    const totalCost = document.getElementById('total_cost').value.trim();
 
     const names = document.querySelectorAll('.name'); //All elements of class 'name'
     const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
@@ -137,12 +137,12 @@ modifyForm.addEventListener("submit", async (event) => {
     }
 
     // Logged user must always appear (if only with quota = 0)
-    if (!Object.hasOwn(users, loggedName)) {
-        users[loggedName] = 0;
+    if (!Object.hasOwn(users, loggedUsername)) {
+        users[loggedUsername] = 0;
     }
 
     // Can't have a refund with more than 2 users or a single user
-    if (total_cost === "0" && Object.keys(users).length !== 2) {
+    if (totalCost === "0" && Object.keys(users).length !== 2) {
         feedback.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per un rimborso';
         return;
     }
@@ -154,20 +154,20 @@ modifyForm.addEventListener("submit", async (event) => {
             sum = sum + parseFloat(quota.value);
         }
     });
-    if (total_cost != sum) {
+    if (totalCost != sum) {
         feedback.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
         return;
     }
 
     // Fetch api to add new expense
-    const new_year = getYear(date);
-    const new_month = getMonth(date);
-    const response = await fetch(`/api/budget/${new_year}/${new_month}/${id}`, {
+    const newYear = getYear(date);
+    const newMonth = getMonth(date);
+    const response = await fetch(`/api/budget/${newYear}/${newMonth}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ date, description, category, total_cost, users }),
+        body: JSON.stringify({ date, description, category, total_cost: totalCost, users }),
     });
 
     // Feedback from database
@@ -176,7 +176,7 @@ modifyForm.addEventListener("submit", async (event) => {
         return;
     } else {
         alert('Spesa modificata con successo!');
-        window.location.replace(`/budget/${new_year}/${new_month}/${id}`);  // Reload page
+        window.location.replace(`/budget/${newYear}/${newMonth}/${id}`);  // Reload page
         return;
     }
 });

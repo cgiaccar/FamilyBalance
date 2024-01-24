@@ -17,14 +17,16 @@
             <th>Pagato da</th>
         </tr>
     </table>
-    <button id="modify_button" style="display: none;">Modifica</button>
-    <button id="delete_button" style="display: none;">Elimina</button>
-    <br />
+    <br /><br />
+
+    <button id="modify_button" style="display: none;">Modifica</button> <br /><br />
+    <button id="delete_button" style="display: none;">Elimina</button> <br /><br />
+
     <form id="modify_form" style="display: none;">
         <label for="date">Data:</label>
         <input type="date" id="date" name="date" /><br /><br />
         <label for="description">Descrizione:</label>
-        <input type="text" id="description" name="description" /><br /><br />
+        <textarea id="description" name="description"></textarea><br /><br />
         <label for="category">Categoria:</label>
         <input type="text" id="category" name="category" /><br /><br />
         <label for="total_cost">Costo totale:</label>

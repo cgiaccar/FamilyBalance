@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Login</title>
-    </head>
-    <body>
-        <form id="login_form" action="/api/auth/signin" method="post">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" />
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password"/>
-            <input type="submit" value="Login"/>
-        </form>
-    </body>
+
+<head>
+    <title>Login</title>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <form id="login_form" action="/api/auth/signin" method="post">
+        <label for="username">Nome utente:</label>
+        <input type="text" name="username" id="username" /> <br /><br />
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" /><br /><br />
+        <input type="submit" value="Login" />
+    </form>
+    <br />
+    <a href="/">Home!</a>
+</body>
+
 </html>

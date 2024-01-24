@@ -1,19 +1,19 @@
 // Useful elements
 const form = document.getElementById('new_expense_form');   // The form
-const total_cost_el = document.getElementById('total_cost');    // Total cost of the new expense
+const totalCostEl = document.getElementById('total_cost');    // Total cost of the new expense
 const quota1 = document.getElementById('quota1');   // Quota of the first user
-let loggedName = "";     // Name of the logged user
+let loggedUsername = "";     // Name of the logged user
 
 // Fill user1 with default value "name = logged user"
 getUser().then(user => {
     const name1 = document.getElementById('name1');
-    loggedName = user.username;
-    name1.setAttribute("value", loggedName);
+    loggedUsername = user.username;
+    name1.setAttribute("value", loggedUsername);
 });
 
 // Always copy total cost in quota1
-total_cost_el.addEventListener('input', () => {
-    quota1.setAttribute("value", total_cost_el.value);
+totalCostEl.addEventListener('input', () => {
+    quota1.setAttribute("value", totalCostEl.value);
 });
 
 
@@ -25,7 +25,7 @@ form.addEventListener('submit', async (event) => {
     const date = document.getElementById('date').value.trim();
     const description = document.getElementById('description').value.trim();
     const category = document.getElementById('category').value.trim();
-    const total_cost = total_cost_el.value.trim();
+    const totalCost = totalCostEl.value.trim();
 
     const names = document.querySelectorAll('.name'); //All elements of class 'name'
     const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
@@ -45,12 +45,12 @@ form.addEventListener('submit', async (event) => {
     }
 
     // Logged user must always appear (if only with quota = 0)
-    if (!Object.hasOwn(users, loggedName)) {
-        users[loggedName] = 0;
+    if (!Object.hasOwn(users, loggedUsername)) {
+        users[loggedUsername] = 0;
     }
 
     // Can't have a refund with more than 2 users or a single user
-    if (total_cost === "0" && Object.keys(users).length !== 2) {
+    if (totalCost === "0" && Object.keys(users).length !== 2) {
         feedback.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per un rimborso';
         return;
     }
@@ -62,7 +62,7 @@ form.addEventListener('submit', async (event) => {
             sum = sum + parseFloat(quota.value);
         }
     });
-    if (total_cost != sum) {
+    if (totalCost != sum) {
         feedback.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
         return;
     }
@@ -75,7 +75,7 @@ form.addEventListener('submit', async (event) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ date, description, category, total_cost, users }),
+        body: JSON.stringify({ date, description, category, total_cost: totalCost, users }),
     });
 
     // Feedback from database
@@ -83,7 +83,7 @@ form.addEventListener('submit', async (event) => {
         feedback.textContent = 'Aggiunta di dati fallita!';
         return;
     } else {
-        feedback.textContent = 'Spesa aggiunta con successo!'
+        feedback.textContent = 'Spesa aggiunta con successo!';
         return;
     }
 });

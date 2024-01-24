@@ -24,10 +24,10 @@ app.post('/api/auth/signin', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
     const users = client.db("users");
-    const db_user = await users.collection("users").findOne({ username: req.body.username });
+    const dbUser = await users.collection("users").findOne({ username: req.body.username });
 
-    if (db_user && db_user.password === req.body.password) {
-        req.session.user = db_user;
+    if (dbUser && dbUser.password === req.body.password) {
+        req.session.user = dbUser;
         res.redirect('/budget/whoami');
     } else {
         res.status(403).send("Non autenticato!");
@@ -45,7 +45,7 @@ app.post('/api/auth/signup', async (req, res) => {
     await client.connect();
     const users = client.db("users");
 
-    const new_user = {
+    const newUser = {
         username: req.body.username,
         password: req.body.password,
         name: req.body.name,
@@ -53,10 +53,10 @@ app.post('/api/auth/signup', async (req, res) => {
     }
 
     try {
-        const check = await users.collection("users").findOne({ username: new_user.username });
-        if (!check) { // if user doesn't exist already
-            const db_user = await users.collection("users").insertOne(new_user);
-            req.session.user = new_user;
+        const check = await users.collection("users").findOne({ username: newUser.username });
+        if (!check) {   // if user doesn't exist already
+            await users.collection("users").insertOne(newUser);
+            req.session.user = newUser;
             res.redirect('/budget/whoami');
         } else {
             res.status(403).send("Username già preso!");
@@ -94,6 +94,15 @@ app.get("/api/budget", verify, async (req, res) => {
 
     res.json(await expenses.collection("expenses").find(query).toArray());
 });
+// Actually returns the allExpenses.html page
+app.get("/budget", verify, async (req, res) => {
+    try {
+        const data = await fs.readFile(`${__dirname}/public/all_expenses.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (err) {
+        console.log(err);
+    }
+});
 
 
 // GET /api/budget/whoami - if authenticated, returns logged user
@@ -102,14 +111,57 @@ app.get("/api/budget/whoami", verify, async (req, res) => {
     const user = req.session.user;
     res.json(user);
 });
-// Actually returns the whoami.html page
+// Actually returns the profile.html page
 app.get("/budget/whoami", verify, async (req, res) => {
     try {
-        const data = await fs.readFile(`${__dirname}/public/whoami.html`, { encoding: `utf8` });
+        const data = await fs.readFile(`${__dirname}/public/profile.html`, { encoding: `utf8` });
         res.send(data);
     } catch (err) {
         console.log(err);
     }
+});
+
+
+// GET /api/budget/search?q=query - returns all expenses that match the query string
+app.get("/api/budget/search?q=query", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const expenses = client.db("expenses");
+
+
+
+
+
+
+    //                  TODOOOOOOOO
+
+
+
+
+
+
+    const username = req.session.user.username;
+    const queryString = req.query(q);
+    //res.json(queryString);
+    console.log("HELLOOOOO");
+    /* 
+        const query = {
+            $and: [
+                { ['users.' + username]: { $exists: true } },    // Filter on logged user
+                {
+                    $or: [
+                        { "description": { $regex: `${queryString}` } },
+                        { "category": { $regex: `${queryString}` } }
+                    ]
+                }
+            ]
+        } */
+
+    let query = {};
+    query['users.' + username] = { $exists: true }; // Filter on logged user
+    query["description"] = { $regex: `${queryString}` }; // Filter on query string
+
+    res.json(await expenses.collection("expenses").find(query).toArray());
 });
 
 
@@ -154,8 +206,8 @@ app.get("/api/budget/:year/:month/:id", verify, async (req, res) => {
     await client.connect();
     const expenses = client.db("expenses");
 
-    let db_expense = await expenses.collection("expenses").findOne({ "_id": new ObjectId(id) });
-    res.json(db_expense);
+    let dbExpense = await expenses.collection("expenses").findOne({ "_id": new ObjectId(id) });
+    res.json(dbExpense);
 });
 // Actually returns the correct expense's page
 app.get("/budget/:year/:month/:id", verify, async (req, res) => {
@@ -174,7 +226,7 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
     await client.connect();
     const expenses = client.db("expenses");
 
-    const new_expense = {
+    const newExpense = {
         date: req.body.date,
         description: req.body.description,
         category: req.body.category,
@@ -184,7 +236,7 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
     }
 
     try {
-        await expenses.collection("expenses").insertOne(new_expense);
+        await expenses.collection("expenses").insertOne(newExpense);
         res.status(201).json(); // Send ok status
     } catch (error) {
         console.log(error);
@@ -194,7 +246,7 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
 // Actually returns the newExpense.html page
 app.get("/budget/add", verify, async (req, res) => {
     try {
-        const data = await fs.readFile(`${__dirname}/public/newExpense.html`, { encoding: `utf8` });
+        const data = await fs.readFile(`${__dirname}/public/new_expense.html`, { encoding: `utf8` });
         res.send(data);
     } catch (err) {
         console.log(err);
@@ -258,11 +310,11 @@ app.get("/api/balance", verify, async (req, res) => {
     let query = {};
     query['users.' + username] = { $exists: true };
 
-    let db_expenses = await expenses.collection("expenses").find(query).toArray();
+    let dbExpenses = await expenses.collection("expenses").find(query).toArray();
 
     // Perform calculations
     let balance = {};
-    db_expenses.forEach(expense => {    // for each expense
+    dbExpenses.forEach(expense => {    // for each expense
         if (expense.total_cost === "0") {   // if it's a refund
             Object.keys(expense.users).forEach(user => {
                 if (user !== username) {
@@ -320,12 +372,6 @@ app.get("/balance/:id", verify, async (req, res) => {
     } catch (err) {
         console.log(err);
     }
-});
-
-
-// GET /api/budget/search?q=query - returns all expenses that match the query string
-app.get("/api/budget/search?q=query", verify, (req, res) => {
-    //TODO
 });
 
 
