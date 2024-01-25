@@ -1,3 +1,9 @@
+// Useful elements
+let loggedUsername = "";
+const searchForm = document.getElementById('search_form');
+const searchTableBody = document.getElementById('search_table_body');
+const searchTable = document.getElementById('search_table');
+
 // Shows user info in its table (page profile.html)
 getUser().then(user => {
     const table = document.querySelector("#user_table");
@@ -5,7 +11,8 @@ getUser().then(user => {
     const username = document.createElement("td");
     const name = document.createElement("td");
     const surname = document.createElement("td");
-    username.innerText = user.username;
+    loggedUsername = user.username
+    username.innerText = loggedUsername;
     name.innerText = user.name;
     surname.innerText = user.surname;
     table.appendChild(tr);
@@ -14,6 +21,7 @@ getUser().then(user => {
     tr.appendChild(surname);
 });
 
+// Shows balance of logged user
 getBalance().then(balance => {
     const table = document.querySelector("#balance_table");
     Object.keys(balance).forEach(key => {
@@ -31,6 +39,36 @@ getBalance().then(balance => {
     });
 });
 
+// Clear table and then show users resulting from search
+searchForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    searchTableBody.innerHTML = "";
+    const query = document.getElementById('query').value;
+    searchUsers(query).then(users => {
+        users.forEach(user => {
+            if (user.username !== loggedUsername) {
+                const tr = document.createElement("tr");
+                const username = document.createElement("td");
+                const name = document.createElement("td");
+                const surname = document.createElement("td");
+
+                name.innerText = user.name;
+                surname.innerText = user.surname;
+
+                const a = document.createElement("a");
+                a.href = `/balance/${user.username}`;
+                a.innerText = user.username;
+                username.appendChild(a);
+
+                searchTableBody.appendChild(tr);
+                tr.appendChild(username);
+                tr.appendChild(name);
+                tr.appendChild(surname);
+            }
+        });
+    });
+});
+
 // Takes the user info using api
 async function getUser() {
     const response = await fetch("/api/budget/whoami");
@@ -43,4 +81,11 @@ async function getBalance() {
     const response = await fetch("/api/balance");
     const balance = await response.json();
     return balance;
+}
+
+// Search users using api
+async function searchUsers(query) {
+    const response = await fetch(`/api/users/search?q=${query}`);
+    const users = await response.json();
+    return users;
 }
