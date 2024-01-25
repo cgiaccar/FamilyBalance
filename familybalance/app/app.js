@@ -123,43 +123,27 @@ app.get("/budget/whoami", verify, async (req, res) => {
 
 
 // GET /api/budget/search?q=query - returns all expenses that match the query string
-app.get("/api/budget/search?q=query", verify, async (req, res) => {
+// Must be before GET /api/budget/:year or "search?q=query" will be interpreted as a possible year and the flow will go there
+app.get("/api/budget/search", verify, async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
     const expenses = client.db("expenses");
 
-
-
-
-
-
-    //                  TODOOOOOOOO
-
-
-
-
-
-
     const username = req.session.user.username;
-    const queryString = req.query(q);
-    //res.json(queryString);
-    console.log("HELLOOOOO");
-    /* 
-        const query = {
-            $and: [
-                { ['users.' + username]: { $exists: true } },    // Filter on logged user
-                {
-                    $or: [
-                        { "description": { $regex: `${queryString}` } },
-                        { "category": { $regex: `${queryString}` } }
-                    ]
-                }
-            ]
-        } */
+    const queryString = req.query.q;
 
     let query = {};
-    query['users.' + username] = { $exists: true }; // Filter on logged user
-    query["description"] = { $regex: `${queryString}` }; // Filter on query string
+
+    // Filter on logged user
+    query['users.' + username] = { $exists: true };
+
+    // Filter on query string ('i' -> case insensitive)
+    query["$or"] = [
+        { "date": { $regex: queryString, $options: 'i' } },
+        { "description": { $regex: queryString, $options: 'i' } },
+        { "category": { $regex: queryString, $options: 'i' } },
+        { "total_cost": { $regex: queryString, $options: 'i' } }
+    ];
 
     res.json(await expenses.collection("expenses").find(query).toArray());
 });
@@ -376,8 +360,23 @@ app.get("/balance/:id", verify, async (req, res) => {
 
 
 // GET /api/users/search?q=query - returns all users that match the query string
-app.get("/api/users/search?q=query", verify, (req, res) => {
-    //TODO //needs verify?
+app.get("/api/users/search", verify, async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const users = client.db("users");
+
+    const queryString = req.query.q;
+
+    let query = {};
+
+    // Filter on query string ('i' -> case insensitive)
+    query["$or"] = [
+        { "username": { $regex: queryString, $options: 'i' } },
+        { "name": { $regex: queryString, $options: 'i' } },
+        { "surname": { $regex: queryString, $options: 'i' } },
+    ];
+
+    res.json(await users.collection("users").find(query).toArray());
 });
 
 
