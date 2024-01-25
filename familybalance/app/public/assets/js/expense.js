@@ -151,7 +151,7 @@ modifyForm.addEventListener("submit", async (event) => {
     let sum = 0;
     quotas.forEach(quota => {
         if (quota.value) {  // If the value is filled
-            sum = sum + parseFloat(quota.value);
+            sum = parseFloat((sum + parseFloat(quota.value)).toFixed(2));
         }
     });
     if (totalCost != sum) {
