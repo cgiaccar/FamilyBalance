@@ -39,7 +39,7 @@ function addToBalanceTable(expense) {
     if (expense.total_cost === "0") {   // it's a refund
         const amount = expense.users[username]; // user's amount
         if (amount < 0) {    // if negative
-            debt.innerText = id + " ti ha rimborsato " + (-amount)    // other is refunding user
+            debt.innerText = id + " ti ha rimborsato " + amount.replace("-", "")    // other is refunding user
         } else {
             debt.innerText = "Hai rimborsato " + amount + " a " + id    // user is refunding other
         }
