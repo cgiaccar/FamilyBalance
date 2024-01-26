@@ -2,8 +2,8 @@
 const form = document.getElementById('new_expense_form');   // The form
 const totalCostEl = document.getElementById('total_cost');    // Total cost of the new expense
 const quota1 = document.getElementById('quota1');   // Quota of the first user
+const name1 = document.getElementById('name1');   // Name of the first user
 let loggedUsername = "";     // Name of the logged user
-const names = document.querySelectorAll('.name'); // All elements of class 'name'
 const usersList = document.getElementById('users_list');  // List of searched users
 
 // Fill user1 with default value "name = logged user"
@@ -29,6 +29,7 @@ form.addEventListener('submit', async (event) => {
     const category = document.getElementById('category').value.trim();
     const totalCost = totalCostEl.value.trim();
 
+    const names = document.querySelectorAll('.name');   // All elements of class 'name'
     const quotas = document.querySelectorAll('.quota'); // All elements of class 'quota'
     // Create and fill users object
     let users = {};
@@ -93,6 +94,9 @@ form.addEventListener('submit', async (event) => {
 // Recursive event listener to add new users
 quota1.addEventListener('input', function () { addUserWithTrigger(2) }, { once: true });
 
+// Recursive event listener to search users
+name1.addEventListener('input', searchUsers);
+
 // Calls addUser and then adds the event listener
 function addUserWithTrigger(i) {
     addUser(i);
@@ -116,10 +120,12 @@ function addUser(i) {
     nameLabel.innerHTML = "Utente: ";
     const nameInput = document.createElement("input");
     nameInput.type = "search";
-    nameInput.list = "users_list"
+    nameInput.setAttribute("list", "users_list");
     nameInput.setAttribute("id", "name" + i);
     nameInput.setAttribute("name", "name" + i);
     nameInput.setAttribute("class", "name");
+    // Add recursive event listener
+    nameInput.addEventListener('input', searchUsers);
 
     // Create label and input for quota_i
     const quotaLabel = document.createElement("label");
@@ -143,22 +149,19 @@ function addUser(i) {
     users.appendChild(br);
 }
 
-
-// Adds event listener to search a user to all elements of class 'name'
 // Cleans the hint list and fills it with search result
-names.forEach(name => name.addEventListener('input', async (event) => {
-    event.preventDefault();
+function searchUsers(e) {
     usersList.innerHTML = "";
-    const query = name.value;
-    searchUsers(query).then(users => {
+    const query = e.target.value;
+    getSearchedUsers(query).then(users => {
         users.forEach(user => {
             const option = document.createElement('option');
             option.value = user.username;
-            option.innerText = " (" + user.name + " " + user.username + ")";
+            option.innerText = " (" + user.name + " " + user.surname + ")";
             usersList.appendChild(option);
         });
     });
-}));
+}
 
 
 // Utility functions to format date
@@ -180,7 +183,7 @@ async function getUser() {
 }
 
 // Search users using api
-async function searchUsers(query) {
+async function getSearchedUsers(query) {
     const response = await fetch(`/api/users/search?q=${query}`);
     const users = await response.json();
     return users;
