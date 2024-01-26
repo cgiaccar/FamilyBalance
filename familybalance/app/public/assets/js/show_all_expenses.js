@@ -2,6 +2,9 @@
 const tableBody = document.getElementById('expenses_table_body');
 const filterForm = document.getElementById('filter_form');
 const yearSelector = document.getElementById('input_year');
+const monthSelector = document.getElementById('input_month');
+const searchForm = document.getElementById('search_form');
+const queryInput = document.getElementById('query');
 
 // Show all expenses in the big table (index.html)
 // Takes expenses and for each one shows it
@@ -61,8 +64,9 @@ function addExpense(expense) {
 filterForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     tableBody.innerHTML = "";
+    queryInput.value = "";
     const year = yearSelector.value;
-    const month = document.getElementById('input_month').value;
+    const month = monthSelector.value;
     if (!month) {
         getExpensesYear(year).then(expenses => {
             expenses.forEach(expense => {
@@ -79,6 +83,18 @@ filterForm.addEventListener("submit", async (event) => {
     }
 });
 
+searchForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    tableBody.innerHTML = "";
+    monthSelector.value = "";
+    yearSelector.value = "";
+    const query = queryInput.value;
+    getSearchedExpenses(query).then(expenses => {
+        expenses.forEach(expense => {
+            addExpense(expense);
+        });
+    });
+});
 
 // Takes all user's expenses using api
 async function getExpenses() {
@@ -97,6 +113,13 @@ async function getExpensesYear(year) {
 // Takes all user's expenses in year and month using api
 async function getExpensesYearMonth(year, month) {
     const response = await fetch(`/api/budget/${year}/${month}`);
+    const expenses = await response.json();
+    return expenses;
+}
+
+// Search expenses using api
+async function getSearchedExpenses(query) {
+    const response = await fetch(`/api/budget/search?q=${query}`);
     const expenses = await response.json();
     return expenses;
 }
