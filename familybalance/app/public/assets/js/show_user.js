@@ -44,7 +44,7 @@ searchForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     searchTableBody.innerHTML = "";
     const query = document.getElementById('query').value;
-    searchUsers(query).then(users => {
+    getSearchedUsers(query).then(users => {
         users.forEach(user => {
             if (user.username !== loggedUsername) {
                 const tr = document.createElement("tr");
@@ -84,7 +84,7 @@ async function getBalance() {
 }
 
 // Search users using api
-async function searchUsers(query) {
+async function getSearchedUsers(query) {
     const response = await fetch(`/api/users/search?q=${query}`);
     const users = await response.json();
     return users;

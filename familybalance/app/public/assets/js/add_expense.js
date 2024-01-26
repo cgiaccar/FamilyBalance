@@ -3,6 +3,8 @@ const form = document.getElementById('new_expense_form');   // The form
 const totalCostEl = document.getElementById('total_cost');    // Total cost of the new expense
 const quota1 = document.getElementById('quota1');   // Quota of the first user
 let loggedUsername = "";     // Name of the logged user
+const names = document.querySelectorAll('.name'); // All elements of class 'name'
+const usersList = document.getElementById('users_list');  // List of searched users
 
 // Fill user1 with default value "name = logged user"
 getUser().then(user => {
@@ -27,8 +29,7 @@ form.addEventListener('submit', async (event) => {
     const category = document.getElementById('category').value.trim();
     const totalCost = totalCostEl.value.trim();
 
-    const names = document.querySelectorAll('.name'); //All elements of class 'name'
-    const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
+    const quotas = document.querySelectorAll('.quota'); // All elements of class 'quota'
     // Create and fill users object
     let users = {};
     names.forEach((name, index) => {
@@ -114,7 +115,8 @@ function addUser(i) {
     nameLabel.setAttribute("for", "name" + i);
     nameLabel.innerHTML = "Utente: ";
     const nameInput = document.createElement("input");
-    nameInput.type = "text";
+    nameInput.type = "search";
+    nameInput.list = "users_list"
     nameInput.setAttribute("id", "name" + i);
     nameInput.setAttribute("name", "name" + i);
     nameInput.setAttribute("class", "name");
@@ -142,6 +144,23 @@ function addUser(i) {
 }
 
 
+// Adds event listener to search a user to all elements of class 'name'
+// Cleans the hint list and fills it with search result
+names.forEach(name => name.addEventListener('input', async (event) => {
+    event.preventDefault();
+    usersList.innerHTML = "";
+    const query = name.value;
+    searchUsers(query).then(users => {
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.username;
+            option.innerText = " (" + user.name + " " + user.username + ")";
+            usersList.appendChild(option);
+        });
+    });
+}));
+
+
 // Utility functions to format date
 function getYear(date) {
     const parts = date.split("-");
@@ -158,4 +177,11 @@ async function getUser() {
     const response = await fetch("/api/budget/whoami");
     const user = await response.json();
     return user;
+}
+
+// Search users using api
+async function searchUsers(query) {
+    const response = await fetch(`/api/users/search?q=${query}`);
+    const users = await response.json();
+    return users;
 }
