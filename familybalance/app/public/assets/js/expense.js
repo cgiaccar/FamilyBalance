@@ -11,6 +11,7 @@ const feedback = document.getElementById('feedback');
 let loggedUsername = "";
 let hostUsername = "";
 const usersList = document.getElementById('users_list');  // List of all users for hints
+let usernames = []; // Array with all valid usernames
 
 
 // Utility functions to format date
@@ -87,6 +88,7 @@ getExpense().then(expense => {
 // Gets all users and fills the option list
 getSearchedUsers("").then(users => {
     users.forEach(user => {
+        usernames.push(user.username);  // Fill valid usernames' array
         const option = document.createElement('option');
         option.value = user.username;
         option.innerText = " (" + user.name + " " + user.surname + ")";
@@ -115,24 +117,31 @@ modifyForm.addEventListener("submit", async (event) => {
     const category = document.getElementById('category').value.trim();
     const totalCost = document.getElementById('total_cost').value.trim();
 
-    const names = document.querySelectorAll('.name'); //All elements of class 'name'
-    const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
-    // Create and fill users object
-    let users = {};
-    names.forEach((name, index) => {
-        let quota = quotas[index];
-        if (quota.value && name.value) {  // If the values are filled
-            users[name.value] = quota.value;
-        }
-    });
-
     // Date must be set
     if (!date) {
         feedback.textContent = 'Per favore, inserire una data';
         return;
     }
 
-    // Logged user must always appear (if only with quota = 0)
+    const names = document.querySelectorAll('.name'); //All elements of class 'name'
+    const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
+    // Create and fill users object
+    let users = {};
+    let stop = false;
+    names.forEach((name, index) => {
+        let quota = quotas[index];
+        if (quota.value && name.value) {  // If the values are filled
+            if (!usernames.includes(name.value)) {    // Check if inserted user exists
+                feedback.textContent = 'Attenzione! l\'utente \"' + name.value + '\" non esiste.';
+                stop = true;
+                return;
+            }
+            users[name.value] = quota.value;
+        }
+    });
+    if (stop) { return; }
+
+    // Logged user must always appear (if only with quota = 0) (useful when lending money)
     if (!Object.hasOwn(users, loggedUsername)) {
         users[loggedUsername] = 0;
     }
