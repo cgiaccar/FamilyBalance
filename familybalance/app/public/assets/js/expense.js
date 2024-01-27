@@ -10,6 +10,8 @@ const modifyForm = document.getElementById('modify_form');
 const feedback = document.getElementById('feedback');
 let loggedUsername = "";
 let hostUsername = "";
+const usersList = document.getElementById('users_list');  // List of all users for hints
+
 
 // Utility functions to format date
 function getDay(date) {
@@ -82,21 +84,15 @@ getExpense().then(expense => {
     });
 });
 
-
-
-// Takes a single expense using api
-async function getExpense() {
-    const response = await fetch(`/api/budget/${year}/${month}/${id}`);
-    const expense = await response.json();
-    return expense;
-}
-
-// Takes the user info using api
-async function getUser() {
-    const response = await fetch("/api/budget/whoami");
-    const user = await response.json();
-    return user;
-}
+// Gets all users and fills the option list
+getSearchedUsers("").then(users => {
+    users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.username;
+        option.innerText = " (" + user.name + " " + user.surname + ")";
+        usersList.appendChild(option);
+    });
+});
 
 // Makes the modify_form visible
 modifyButton.addEventListener("click", (event) => {
@@ -203,6 +199,7 @@ function addUser(i) {
     nameLabel.innerHTML = "Utente: ";
     const nameInput = document.createElement("input");
     nameInput.type = "text";
+    nameInput.setAttribute("list", "users_list");
     nameInput.setAttribute("id", "name" + i);
     nameInput.setAttribute("name", "name" + i);
     nameInput.setAttribute("class", "name");
@@ -255,3 +252,25 @@ deleteButton.addEventListener("click", async (event) => {
         }
     }
 });
+
+
+// Takes a single expense using api
+async function getExpense() {
+    const response = await fetch(`/api/budget/${year}/${month}/${id}`);
+    const expense = await response.json();
+    return expense;
+}
+
+// Takes the user info using api
+async function getUser() {
+    const response = await fetch("/api/budget/whoami");
+    const user = await response.json();
+    return user;
+}
+
+// Search users using api
+async function getSearchedUsers(query) {
+    const response = await fetch(`/api/users/search?q=${query}`);
+    const users = await response.json();
+    return users;
+}

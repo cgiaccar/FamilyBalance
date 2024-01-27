@@ -4,7 +4,7 @@ const totalCostEl = document.getElementById('total_cost');    // Total cost of t
 const quota1 = document.getElementById('quota1');   // Quota of the first user
 const name1 = document.getElementById('name1');   // Name of the first user
 let loggedUsername = "";     // Name of the logged user
-const usersList = document.getElementById('users_list');  // List of searched users
+const usersList = document.getElementById('users_list');  // List of all users for hints
 
 // Fill user1 with default value "name = logged user"
 getUser().then(user => {
@@ -16,6 +16,16 @@ getUser().then(user => {
 // Always copy total cost in quota1
 totalCostEl.addEventListener('input', () => {
     quota1.setAttribute("value", totalCostEl.value);
+});
+
+// Gets all users and fills the option list
+getSearchedUsers("").then(users => {
+    users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.username;
+        option.innerText = " (" + user.name + " " + user.surname + ")";
+        usersList.appendChild(option);
+    });
 });
 
 
@@ -94,9 +104,6 @@ form.addEventListener('submit', async (event) => {
 // Recursive event listener to add new users
 quota1.addEventListener('input', function () { addUserWithTrigger(2) }, { once: true });
 
-// Recursive event listener to search users
-name1.addEventListener('input', searchUsers);
-
 // Calls addUser and then adds the event listener
 function addUserWithTrigger(i) {
     addUser(i);
@@ -119,13 +126,11 @@ function addUser(i) {
     nameLabel.setAttribute("for", "name" + i);
     nameLabel.innerHTML = "Utente: ";
     const nameInput = document.createElement("input");
-    nameInput.type = "search";
+    nameInput.type = "text";
     nameInput.setAttribute("list", "users_list");
     nameInput.setAttribute("id", "name" + i);
     nameInput.setAttribute("name", "name" + i);
     nameInput.setAttribute("class", "name");
-    // Add recursive event listener
-    nameInput.addEventListener('input', searchUsers);
 
     // Create label and input for quota_i
     const quotaLabel = document.createElement("label");
@@ -148,21 +153,6 @@ function addUser(i) {
     users.appendChild(newUser)
     users.appendChild(br);
 }
-
-// Cleans the hint list and fills it with search result
-function searchUsers(e) {
-    usersList.innerHTML = "";
-    const query = e.target.value;
-    getSearchedUsers(query).then(users => {
-        users.forEach(user => {
-            const option = document.createElement('option');
-            option.value = user.username;
-            option.innerText = " (" + user.name + " " + user.surname + ")";
-            usersList.appendChild(option);
-        });
-    });
-}
-
 
 // Utility functions to format date
 function getYear(date) {
