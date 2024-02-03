@@ -33,14 +33,24 @@
         </div>
     </nav>
 
-    <div class="container-xl text-center">
+    <div class="container-xl">
         <h1>Login</h1>
         <form id="login_form" action="/api/auth/signin" method="post">
-            <label for="username">Nome utente:</label>
-            <input type="text" name="username" id="username" /> <br /><br />
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" /><br /><br />
-            <input class="btn btn-light" type="submit" value="Login" />
+            <div class="row mb-3">
+                <label for="username" class="col-sm-2 col-form-label">Nome utente:</label>
+                <div class="col-sm-5">
+                    <input type="text" name="username" id="username" class="form-control" /><br>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="password" class="col-sm-2 col-form-label">Password:</label>
+                <div class="col-sm-5">
+                    <input type="password" name="password" id="password" class="form-control" /><br>
+                </div>
+            </div>
+            <div class="d-grid gap-2 col-sm-1">
+                <input class="btn btn-light" type="submit" value="Login" />
+            </div>
         </form>
         <br />
     </div>
