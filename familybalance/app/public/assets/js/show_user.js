@@ -42,6 +42,7 @@ getBalance().then(balance => {
 // Clear table and then show users resulting from search
 searchForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    searchTable.style.display = "";
     searchTableBody.innerHTML = "";
     const query = document.getElementById('query').value;
     getSearchedUsers(query).then(users => {

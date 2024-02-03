@@ -4,6 +4,7 @@
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/style.css">
     <script language="javascript" src="../bootstrap/js/bootstrap.min.js" defer></script>
 </head>
 
@@ -30,16 +31,18 @@
         </div>
     </nav>
 
-    <h1>Login</h1>
-    <form id="login_form" action="/api/auth/signin" method="post">
-        <label for="username">Nome utente:</label>
-        <input type="text" name="username" id="username" /> <br /><br />
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" /><br /><br />
-        <input type="submit" value="Login" />
-    </form>
-    <br />
-    <a href="/">Home!</a>
+    <div class="container-xl text-center">
+        <h1>Login</h1>
+        <form id="login_form" action="/api/auth/signin" method="post">
+            <label for="username">Nome utente:</label>
+            <input type="text" name="username" id="username" /> <br /><br />
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" /><br /><br />
+            <input type="submit" value="Login" />
+        </form>
+        <br />
+        <a href="/">Home!</a>
+    </div>
 </body>
 
 </html>

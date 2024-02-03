@@ -3,9 +3,10 @@
 
 <head>
     <title>Spese</title>
-    <script src="assets/js/show_all_expenses.js" defer></script>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/style.css">
     <script language="javascript" src="../bootstrap/js/bootstrap.min.js" defer></script>
+    <script src="assets/js/show_all_expenses.js" defer></script>
 </head>
 
 <body>
@@ -30,51 +31,53 @@
         </div>
     </nav>
 
-    <h2>Ecco le tue spese!</h2>
-    <form id="filter_form">
-        <select name="input_year" id="input_year">
-            <option value="">--- Seleziona un anno ---</option>
-        </select>
-        <select name="input_month" id="input_month">
-            <option value="">--- Seleziona un mese ---</option>
-            <option value="01">Gennaio</option>
-            <option value="02">Febbraio</option>
-            <option value="03">Marzo</option>
-            <option value="04">Aprile</option>
-            <option value="05">Maggio</option>
-            <option value="06">Giugno</option>
-            <option value="07">Luglio</option>
-            <option value="08">Agosto</option>
-            <option value="09">Settembre</option>
-            <option value="10">Ottobre</option>
-            <option value="11">Novembre</option>
-            <option value="12">Dicembre</option>
-        </select>
-        <button type="submit">Filtra!</button>
-    </form>
-    <br>
-    <form id="search_form">
-        <label for="query">Cerca una spesa</label>
-        <input type="text" name="query" id="query">
-        <button type="submit">Cerca!</button>
-    </form>
-    <table id="expenses_table">
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Categoria</th>
-                <th>Costo totale</th>
-                <th>Pagato da</th>
-            </tr>
-        </thead>
-        <tbody id="expenses_table_body">
+    <div class="container-xl text-center">
+        <h2>Ecco le tue spese!</h2>
+        <form id="filter_form">
+            <select name="input_year" id="input_year">
+                <option value="">--- Seleziona un anno ---</option>
+            </select>
+            <select name="input_month" id="input_month">
+                <option value="">--- Seleziona un mese ---</option>
+                <option value="01">Gennaio</option>
+                <option value="02">Febbraio</option>
+                <option value="03">Marzo</option>
+                <option value="04">Aprile</option>
+                <option value="05">Maggio</option>
+                <option value="06">Giugno</option>
+                <option value="07">Luglio</option>
+                <option value="08">Agosto</option>
+                <option value="09">Settembre</option>
+                <option value="10">Ottobre</option>
+                <option value="11">Novembre</option>
+                <option value="12">Dicembre</option>
+            </select>
+            <button type="submit">Filtra!</button>
+        </form>
+        <br>
+        <form id="search_form">
+            <label for="query">Cerca una spesa</label>
+            <input type="text" name="query" id="query">
+            <button type="submit">Cerca!</button>
+        </form>
+        <table class="table" id="expenses_table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Categoria</th>
+                    <th>Costo totale</th>
+                    <th>Pagato da</th>
+                </tr>
+            </thead>
+            <tbody id="expenses_table_body">
 
-        </tbody>
-    </table>
-    <br />
-    <a href="/budget/add">Aggiungi usa spesa!</a>
-    <br />
-    <a href="/">Home!</a>
+            </tbody>
+        </table>
+        <br />
+        <a href="/budget/add">Aggiungi usa spesa!</a>
+        <br />
+        <a href="/">Home!</a>
+    </div>
 </body>
 
 </html>

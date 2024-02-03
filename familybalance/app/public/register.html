@@ -4,6 +4,7 @@
 <head>
     <title>Registrati</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
     <script language="javascript" src="../bootstrap/js/bootstrap.min.js" defer></script>
 </head>
 
@@ -29,20 +30,22 @@
         </div>
     </nav>
 
-    <h1>Registrati</h1>
-    <form id="register_form" action="/api/auth/signup" method="post">
-        <label for="username">Nome utente:</label>
-        <input type="text" name="username" id="username" /><br /><br />
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" /><br /><br />
-        <label for="name">Nome:</label>
-        <input type="text" name="name" id="name" /><br /><br />
-        <label for="surname">Cognome:</label>
-        <input type="text" name="surname" id="surname" /><br /><br />
-        <input type="submit" value="Register" />
-    </form>
-    <br />
-    <a href="/">Home!</a>
+    <div class="container-xl text-center">
+        <h1>Registrati</h1>
+        <form id="register_form" action="/api/auth/signup" method="post">
+            <label for="username">Nome utente:</label>
+            <input type="text" name="username" id="username" /><br /><br />
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" /><br /><br />
+            <label for="name">Nome:</label>
+            <input type="text" name="name" id="name" /><br /><br />
+            <label for="surname">Cognome:</label>
+            <input type="text" name="surname" id="surname" /><br /><br />
+            <input type="submit" value="Register" />
+        </form>
+        <br />
+        <a href="/">Home!</a>
+    </div>
 </body>
 
 </html>

@@ -2,10 +2,11 @@
 <html>
 
 <head>
-    <title>Dati utente</title>
-    <script src="../assets/js/show_user.js" defer></script>
+    <title>Profilo</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
     <script language="javascript" src="../bootstrap/js/bootstrap.min.js" defer></script>
+    <script src="../assets/js/show_user.js" defer></script>
 </head>
 
 <body>
@@ -30,44 +31,46 @@
         </div>
     </nav>
 
-    <h2>Ecco i tuoi dati!</h2>
-    <table id="user_table">
-        <tr>
-            <th>Username</th>
-            <th>Nome</th>
-            <th>Cognome</th>
-        </tr>
-    </table>
-
-    <br>
-    <form id="search_form">
-        <label for="query">Cerca un utente</label>
-        <input type="text" name="query" id="query">
-        <button type="submit">Cerca!</button>
-    </form>
-    <table id="search_table">
-        <thead>
+    <div class="container-xl text-center">
+        <h2>Ecco i tuoi dati!</h2>
+        <table class="table" id="user_table">
             <tr>
                 <th>Username</th>
                 <th>Nome</th>
                 <th>Cognome</th>
             </tr>
-        </thead>
-        <tbody id="search_table_body">
+        </table>
 
-        </tbody>
-    </table>
+        <br>
+        <form id="search_form">
+            <label for="query">Cerca un utente</label>
+            <input type="text" name="query" id="query">
+            <button type="submit">Cerca!</button>
+        </form>
+        <table class="table" id="search_table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                </tr>
+            </thead>
+            <tbody id="search_table_body">
 
-    <br>
-    <h2>Il tuo bilancio corrente:</h2>
-    <table id="balance_table">
-        <tr>
-            <th>Utente</th>
-            <th>Quanto ti deve</th>
-        </tr>
-    </table>
-    <br>
-    <a href="/">Home!</a>
+            </tbody>
+        </table>
+
+        <br>
+        <h2>Il tuo bilancio corrente:</h2>
+        <table class="table" id="balance_table">
+            <tr>
+                <th>Utente</th>
+                <th>Quanto ti deve</th>
+            </tr>
+        </table>
+        <br>
+        <a href="/">Home!</a>
+    </div>
 </body>
 
 </html>
