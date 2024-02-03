@@ -129,35 +129,46 @@ function addUser(i) {
     // Create div user_i
     const newUser = document.createElement("div");
     newUser.setAttribute("id", "user" + i);
+    newUser.setAttribute("class", "row");
+
+    // Create divs for columns
+    const divLabel = document.createElement("div");
+    divLabel.setAttribute("class", "col-sm-4");
+    const divQuota = document.createElement("div");
+    divQuota.setAttribute("class", "col-sm-3");
 
     // Create label and input for name_i
     const nameLabel = document.createElement("label");
     nameLabel.setAttribute("for", "name" + i);
+    nameLabel.setAttribute("class", "form-label");
     nameLabel.innerHTML = "Utente: ";
     const nameInput = document.createElement("input");
     nameInput.type = "text";
     nameInput.setAttribute("list", "users_list");
     nameInput.setAttribute("id", "name" + i);
     nameInput.setAttribute("name", "name" + i);
-    nameInput.setAttribute("class", "name");
+    nameInput.setAttribute("class", "name form-control");
 
     // Create label and input for quota_i
     const quotaLabel = document.createElement("label");
     quotaLabel.setAttribute("for", "quota" + i);
+    quotaLabel.setAttribute("class", "form-label");
     quotaLabel.innerHTML = " Spesa: ";
     const quotaInput = document.createElement("input");
     quotaInput.type = "number";
     quotaInput.setAttribute("step", "0.01");
     quotaInput.setAttribute("id", "quota" + i);
     quotaInput.setAttribute("name", "quota" + i);
-    quotaInput.setAttribute("class", "quota");
+    quotaInput.setAttribute("class", "quota form-control");
 
     const br = document.createElement("br");
 
-    newUser.appendChild(nameLabel);
-    newUser.appendChild(nameInput);
-    newUser.appendChild(quotaLabel);
-    newUser.appendChild(quotaInput);
+    divLabel.appendChild(nameLabel);
+    divLabel.appendChild(nameInput);
+    divQuota.appendChild(quotaLabel);
+    divQuota.appendChild(quotaInput);
+    newUser.appendChild(divLabel);
+    newUser.appendChild(divQuota);
 
     users.appendChild(newUser)
     users.appendChild(br);
