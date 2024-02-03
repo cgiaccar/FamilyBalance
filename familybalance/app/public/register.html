@@ -4,8 +4,10 @@
 <head>
     <title>Registrati</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../assets/css/style.css" />
     <script language="javascript" src="../bootstrap/js/bootstrap.min.js" defer></script>
+    <script src="../assets/js/to_top_button.js" defer></script>
 </head>
 
 <body>
@@ -43,9 +45,16 @@
             <input type="text" name="surname" id="surname" /><br /><br />
             <input type="submit" value="Register" />
         </form>
-        <br />
-        <a href="/">Home!</a>
     </div>
+
+    <footer>
+        <button id="back_button" class="btn btn-light btn-floating" onclick="history.back()">
+            <span> <i class=" bi bi-arrow-left"></i></span> Indietro</button>
+        <button type="button" class="btn btn-lg btn-light btn-floating rounded-circle" id="to_top_button"
+            style="display: none;">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+    </footer>
 </body>
 
 </html>

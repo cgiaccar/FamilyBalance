@@ -5,3 +5,17 @@ body {
 .nav {
     background-color: blueviolet !important;
 }
+
+/* Button to go back to the top of the page */
+#to_top_button {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+}
+
+/* Button to go back to the previous page */
+#back_button {
+    position: fixed;
+    bottom: 20px;
+    left: 30px;
+}

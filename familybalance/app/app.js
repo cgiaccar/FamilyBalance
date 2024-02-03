@@ -14,6 +14,7 @@ app.use(express.urlencoded());
 app.use(bodyParser.json()); // Parse incoming requests with JSON payloads
 app.use(bodyParser.urlencoded({ extended: true })); // Parse incoming requests with URL-encoded payloads
 app.use("/bootstrap", express.static(`${__dirname}/node_modules/bootstrap/dist/`)); // Bootstrap
+app.use("/bootstrap-icons", express.static(`${__dirname}/node_modules/bootstrap-icons/`)); // Bootstrap icons
 
 app.use(session({
     secret: 'my_biggest_secret',
