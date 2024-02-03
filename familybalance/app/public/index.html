@@ -3,23 +3,35 @@
 
 <head>
     <title>Family Balance</title>
-    <style>
-        * {
-            font-family: 'Courier New', Courier, monospace;
-            color: blueviolet;
-            font-style: italic;
-        }
-    </style>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+    <script language="javascript" src="../bootstrap/js/bootstrap.min.js" defer></script>
 </head>
 
 <body>
+    <!--Navigation bar-->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">FamilyBalance</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <ul class="navbar-nav nav-underline">
+                    <li><a class="nav-link active" aria-current="page" href="/">Home</a></li>
+                    <li><a class="nav-link" href="/auth/signin">Login</a></li>
+                    <li><a class="nav-link" href="/auth/signup">Registrati</a></li>
+                    <li><a class="nav-link" href="/budget/whoami">Il tuo profilo</a></li>
+                    <li><a class="nav-link" href="/budget">Le tue spese</a></li>
+                    <li><a class="nav-link" href="/budget/add">Aggiungi spesa!</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <h1>Benvenuto in Family Balance!</h1>
     <h2>Ti trovi nella homepage</h2>
-    <a href="/auth/signin">Login!</a>
-    <a href="/auth/signup">Registrati!</a>
-    <a href="/budget/whoami">Il tuo profilo</a>
-    <a href="/budget">Le tue spese</a>
-    <a href="/budget/add">Aggiungi spesa!</a>
+
 </body>
 
 </html>
