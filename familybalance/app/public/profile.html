@@ -39,18 +39,47 @@
 
     <div class="container-xl">
         <h1>Ecco i tuoi dati!</h1>
-        <table class="table table-striped" id="user_table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Nome</th>
-                    <th>Cognome</th>
-                </tr>
-            </thead>
-            <tbody id="user_table_body" class="table-group-divider">
 
-            </tbody>
-        </table>
+        <div class="card card-body bg-light col-md-6">
+            <i class="bi bi-person-square" style="font-size: 6em;"></i>
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-5">
+                    <p class="mb-0">Username</p>
+                </div>
+                <div class="col-sm-5">
+                    <p id="username" class="text-muted mb-0"></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-5">
+                    <p class="mb-0">Nome</p>
+                </div>
+                <div class="col-sm-5">
+                    <p id="name" class="text-muted mb-0"></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-5">
+                    <p class="mb-0">Cognome</p>
+                </div>
+                <div class="col-sm-5">
+                    <p id="surname" class="text-muted mb-0"></p>
+                </div>
+            </div>
+            <hr>
+        </div>
+
+        <br><br>
+        <div class="row gap-3">
+            <a href="/budget" class="btn btn-light col-md-3">
+                <span><i class="bi bi-cash-stack float-start"></i></span> Vai alle tue spese</a>
+            <a href="/balance" class="btn btn-light col-md-3">
+                <span><i class="bi bi-plus-slash-minus float-start"></i></span> Controlla il tuo bilancio</a>
+        </div>
     </div>
 
     <br><br><br><br>
