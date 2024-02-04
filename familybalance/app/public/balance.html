@@ -2,14 +2,14 @@
 <html>
 
 <head>
-    <title>Bilancio</title>
+    <title>Profilo</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../assets/css/style.css" />
     <script language="javascript" src="../bootstrap/js/bootstrap.min.js" defer></script>
     <script src="../assets/js/to_top_button.js" defer></script>
-    <script src="../../../assets/js/show_balance_id.js" defer></script>
-    <script src="../../../assets/js/navbar.js" defer></script>
+    <script src="../assets/js/navbar.js" defer></script>
+    <script src="../assets/js/show_balance.js" defer></script>
 </head>
 
 <body>
@@ -27,7 +27,7 @@
                     <a class="nav-link default_navbar" href="/auth/signin" style="display: none;">Login</a>
                     <a class="nav-link default_navbar" href="/auth/signup" style="display: none;">Registrati</a>
                     <a class="nav-link logged_navbar" href="/budget/whoami" style="display: none;">Il tuo profilo</a>
-                    <a class="nav-link logged_navbar active" aria-current="page" href="/balance"
+                    <a class="nav-link logged_navbar active" aria-current="page" href="/budget/whoami"
                         style="display: none;">Il tuo bilancio</a>
                     <a class="nav-link logged_navbar" href="/budget" style="display: none;">Le tue spese</a>
                     <a class="nav-link logged_navbar" href="/budget/add" style="display: none;">Aggiungi spesa!</a>
@@ -37,14 +37,39 @@
         </div>
     </nav>
 
-    <div class="container-xl text-center">
-        <h1 id="title">Bilancio tra te e </h1>
+    <div class="container-xl">
+
+        <h1>Il tuo bilancio corrente:</h1>
         <table class="table" id="balance_table">
-            <th>Data</th>
-            <th>Movimento</th>
-            <th></th>
+            <tr>
+                <th>Utente</th>
+                <th>Quanto ti deve</th>
+            </tr>
         </table>
+        <br><br>
+
+        <form id="search_form" class="row gap-3">
+            <label for="query" class="form-label">Cerca un utente per scoprire i movimenti tra voi:</label>
+            <input type="text" name="query" id="query" class="col col-md-5 input-group-text"
+                placeholder="Scrivi il suo nome o fai una ricerca parziale">
+            <button class="btn btn-light col-md-1" type="submit">Cerca!</button>
+        </form>
+        <br>
+        <table class="table" id="search_table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                </tr>
+            </thead>
+            <tbody id="search_table_body">
+
+            </tbody>
+        </table>
+
     </div>
+
 
     <br><br><br><br>
     <footer>

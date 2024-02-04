@@ -427,6 +427,17 @@ app.get("/budget/add", verify, async (req, res) => {
 });
 
 
+// Returns the balance.html page
+app.get("/balance", verify, async (req, res) => {
+    try {
+        const data = await fs.readFile(`${__dirname}/public/balance.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+
 // Returns the balance_id.html page
 app.get("/balance/:id", verify, async (req, res) => {
     try {

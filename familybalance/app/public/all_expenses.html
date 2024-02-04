@@ -27,6 +27,7 @@
                     <a class="nav-link default_navbar" href="/auth/signin" style="display: none;">Login</a>
                     <a class="nav-link default_navbar" href="/auth/signup" style="display: none;">Registrati</a>
                     <a class="nav-link logged_navbar" href="/budget/whoami" style="display: none;">Il tuo profilo</a>
+                    <a class="nav-link logged_navbar" href="/balance" style="display: none;">Il tuo bilancio</a>
                     <a class="nav-link logged_navbar active" aria-current="page" href="/budget"
                         style="display: none;">Le tue spese</a>
                     <a class="nav-link logged_navbar" href="/budget/add" style="display: none;">Aggiungi spesa!</a>
@@ -36,13 +37,13 @@
         </div>
     </nav>
 
-    <div class="container-xl text-center">
+    <div class="container-xl">
         <h1>Ecco le tue spese!</h1>
-        <form id="filter_form">
-            <select name="input_year" id="input_year">
+        <form id="filter_form" class="row gap-3">
+            <select name="input_year" id="input_year" class="form-select col">
                 <option value="">--- Seleziona un anno ---</option>
             </select>
-            <select name="input_month" id="input_month">
+            <select name="input_month" id="input_month" class="form-select col">
                 <option value="">--- Seleziona un mese ---</option>
                 <option value="01">Gennaio</option>
                 <option value="02">Febbraio</option>
@@ -57,14 +58,16 @@
                 <option value="11">Novembre</option>
                 <option value="12">Dicembre</option>
             </select>
-            <button class="btn btn-light" type="submit">Filtra!</button>
+            <button class="btn btn-light col-sm-2" type="submit">Filtra!</button>
         </form>
         <br>
-        <form id="search_form">
-            <label for="query">Cerca una spesa</label>
-            <input type="text" name="query" id="query">
-            <button class="btn btn-light" type="submit">Cerca!</button>
+        <form id="search_form" class="row gap-3">
+            <label for="query" class="col col-auto form-label">Cerca una spesa:</label>
+            <input type="text" name="query" id="query" class="col col-md-5 input-group-text"
+                placeholder="Scrivi quello che vuoi cercare">
+            <button class="btn btn-light col-md-1" type="submit">Cerca!</button>
         </form>
+        <br>
         <table class="table" id="expenses_table">
             <thead>
                 <tr>
@@ -84,6 +87,7 @@
             Aggiungi una spesa!</a>
     </div>
 
+    <br><br><br><br>
     <footer>
         <button id="back_button" class="btn btn-light btn-floating" onclick="history.back()">
             <span> <i class=" bi bi-arrow-left"></i></span> Indietro</button>
