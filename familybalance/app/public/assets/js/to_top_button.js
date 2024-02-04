@@ -1,7 +1,7 @@
 // Button element
-let toTopButton = document.getElementById("to_top_button");
+const toTopButton = document.getElementById("to_top_button");
 
-// When scrolling, check if we scrolled down; if yes, show button
+// When scrolling, check if we scrolled down 20px; if yes, show button
 window.onscroll = () => {
     if (
         document.body.scrollTop > 20 ||

@@ -7,9 +7,18 @@ h1 {
     padding-bottom: 1em;
 }
 
+.navbar-brand{
+    color:rgb(150, 73, 205);
+    margin-left: 2em;
+}
+
 .feedback{
     margin-left: 1em;
     color: red;
+}
+
+#logout {
+    float: right;
 }
 
 /* Button to go back to the top of the page */

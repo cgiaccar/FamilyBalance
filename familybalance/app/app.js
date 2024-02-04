@@ -28,6 +28,7 @@ function verify(req, res, next) {
     if (req.session.user) {
         next();
     } else {
+        res.status(403);    // Forbidden
         res.sendFile(`${__dirname}/public/error.html`);
     }
 }
@@ -76,6 +77,31 @@ app.post('/api/auth/signin', async (req, res) => {
         res.redirect('/budget/whoami');
     } else {
         res.status(403).send("Non autenticato!");
+    }
+});
+
+
+// Logout - if the session exists (verify), deletes the session
+app.post("/api/auth/signout", verify, async (req, res) => {
+    req.session.destroy(function (err) {
+        if (err) {
+            console.log(err);
+            res.status(500);    // Error
+        } else {
+            res.status(200);    // OK
+            res.redirect('/');
+        }
+    });
+});
+
+
+// Check user - checks if the user is logged in
+app.get("/api/auth/check", (req, res) => {
+    if (req.session.user) {
+        res.send("authenticated");
+    }
+    else {
+        res.send("not authenticated");
     }
 });
 
