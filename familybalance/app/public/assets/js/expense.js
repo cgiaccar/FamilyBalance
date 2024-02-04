@@ -251,7 +251,7 @@ deleteButton.addEventListener("click", async (event) => {
             const response = await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 alert("Spesa eliminata con successo!");
-                window.location.replace("/");
+                window.location = document.referrer;    // Back to previous page
             } else {
                 alert("Qualcosa è andato storto, eliminazione fallita.")
             }

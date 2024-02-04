@@ -34,7 +34,17 @@ getSearchedUsers("").then(users => {
 // At submit, takes data and fetches api
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const feedback = document.getElementById('feedback');
+
+    const feedbackDate = document.getElementById('feedback_date');
+    const feedbackCategory = document.getElementById('feedback_category');
+    const feedbackTotal = document.getElementById('feedback_total');
+    const feedbackGeneral = document.getElementById('feedback_general');
+
+    // Empty previous messages
+    feedbackDate.innerHTML = "";
+    feedbackCategory.innerHTML = "";
+    feedbackTotal.innerHTML = "";
+    feedbackGeneral.innerHTML = "";
 
     const date = document.getElementById('date').value.trim();
     const description = document.getElementById('description').value.trim();
@@ -43,7 +53,13 @@ form.addEventListener('submit', async (event) => {
 
     // Date must be set
     if (!date) {
-        feedback.textContent = 'Per favore, inserire una data';
+        feedbackDate.textContent = 'Per favore, inserire una data';
+        return;
+    }
+
+    // Category must be set
+    if (!category) {
+        feedbackCategory.textContent = 'Per favore, inserire una categoria';
         return;
     }
 
@@ -56,7 +72,7 @@ form.addEventListener('submit', async (event) => {
         let quota = quotas[index];
         if (quota.value && name.value) {  // If the values are filled
             if (!usernames.includes(name.value)) {    // Check if inserted user exists
-                feedback.textContent = 'Attenzione! l\'utente \"' + name.value + '\" non esiste.';
+                feedbackGeneral.textContent = 'Attenzione! l\'utente \"' + name.value + '\" non esiste.';
                 stop = true;
                 return;
             }
@@ -72,7 +88,7 @@ form.addEventListener('submit', async (event) => {
 
     // Can't have a refund with more than 2 users or a single user
     if (totalCost === "0" && Object.keys(users).length !== 2) {
-        feedback.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per un rimborso';
+        feedbackTotal.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per effettuare un rimborso';
         return;
     }
 
@@ -84,7 +100,7 @@ form.addEventListener('submit', async (event) => {
         }
     });
     if (totalCost != sum) {
-        feedback.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
+        feedbackTotal.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
         return;
     }
 
@@ -101,10 +117,11 @@ form.addEventListener('submit', async (event) => {
 
     // Feedback from database
     if (!response.ok) {
-        feedback.textContent = 'Aggiunta di dati fallita!';
+        feedbackGeneral.textContent = 'Aggiunta di dati fallita!';
         return;
     } else {
-        feedback.textContent = 'Spesa aggiunta con successo!';
+        alert("Spesa aggiunta con successo!");
+        window.location.reload();
         return;
     }
 });

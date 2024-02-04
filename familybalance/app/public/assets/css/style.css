@@ -7,7 +7,7 @@ h1 {
     padding-bottom: 1em;
 }
 
-#feedback{
+.feedback{
     margin-left: 1em;
     color: red;
 }
