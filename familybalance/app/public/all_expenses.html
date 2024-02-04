@@ -63,12 +63,12 @@
         <br>
         <form id="search_form" class="row gap-3">
             <label for="query" class="col col-auto form-label">Cerca una spesa:</label>
-            <input type="text" name="query" id="query" class="col col-md-5 input-group-text"
-                placeholder="Scrivi quello che vuoi cercare">
+            <input type="text" name="query" id="query" class="col col-md-5 form-control w-25"
+                placeholder="Scrivi quello che vuoi cercare...">
             <button class="btn btn-light col-md-1" type="submit">Cerca!</button>
         </form>
         <br>
-        <table class="table" id="expenses_table">
+        <table class="table table-striped " id="expenses_table">
             <thead>
                 <tr>
                     <th>Data</th>
@@ -77,7 +77,7 @@
                     <th>Pagato da</th>
                 </tr>
             </thead>
-            <tbody id="expenses_table_body">
+            <tbody id="expenses_table_body" class="table-group-divider">
 
             </tbody>
         </table>

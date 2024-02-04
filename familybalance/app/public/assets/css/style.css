@@ -7,12 +7,16 @@ h1 {
     padding-bottom: 1em;
 }
 
-.navbar-brand{
+.navbar-brand {
     color:rgb(150, 73, 205);
     margin-left: 1em;
 }
 
-.feedback{
+.table-group-divider {
+    border-top-color: rgba(150, 73, 205, 0.5);
+}
+
+.feedback {
     margin-left: 1em;
     color: red;
 }

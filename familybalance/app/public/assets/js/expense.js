@@ -4,8 +4,11 @@ const parts = url.split("/");
 const id = parts[parts.length - 1]
 const month = parts[parts.length - 2]
 const year = parts[parts.length - 3]
+const tableBody = document.getElementById("expense_table_body");
 const deleteButton = document.getElementById('delete_button');
 const modifyButton = document.getElementById('modify_button');
+const refreshButton = document.getElementById('refresh_button');
+const hiddenDiv = document.getElementById('hidden_div')
 const modifyForm = document.getElementById('modify_form');
 const feedback = document.getElementById('feedback');
 let loggedUsername = "";
@@ -32,7 +35,6 @@ function getMonth(date) {
 // fill the modify_form (hidden at the beginning)
 // and set the visibility of modify/delete buttons
 getExpense().then(expense => {
-    const table = document.querySelector("#expense_table");
     const tr = document.createElement("tr");
     const date = document.createElement("td");
     const description = document.createElement("td");
@@ -49,7 +51,7 @@ getExpense().then(expense => {
         users.innerText += property + ": " + expense.users[property] + "\n ";
     })
     host.innerText = expense.host;
-    table.appendChild(tr);
+    tableBody.appendChild(tr);
     tr.appendChild(date);
     tr.appendChild(description);
     tr.appendChild(category);
@@ -96,10 +98,21 @@ getSearchedUsers("").then(users => {
     });
 });
 
-// Makes the modify_form visible
+// Controls modify_form visibility (inside its div)
 modifyButton.addEventListener("click", (event) => {
     event.preventDefault();
-    modifyForm.style.display = "";
+    if (hiddenDiv.style.display === "none") {
+        hiddenDiv.style.display = "";
+        modifyButton.innerText = "Nascondi modifiche"
+    } else {
+        hiddenDiv.style.display = "none";
+        modifyButton.innerText = "Modifica"
+    }
+});
+
+refreshButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.location.reload();
 });
 
 // Calls modify/put from api (same as newExpense, but with PUT and reload page at the end)

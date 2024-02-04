@@ -3,6 +3,7 @@ let loggedUsername = "";
 const searchForm = document.getElementById('search_form');
 const searchTableBody = document.getElementById('search_table_body');
 const searchTable = document.getElementById('search_table');
+const balanceTableBody = document.getElementById('balance_table_body');
 
 // Takes logged user's username
 getUser().then(user => {
@@ -11,17 +12,17 @@ getUser().then(user => {
 
 // Shows balance of logged user
 getBalance().then(balance => {
-    const table = document.querySelector("#balance_table");
     Object.keys(balance).forEach(key => {
         const tr = document.createElement("tr");
         const debtor = document.createElement("td");
         const amount = document.createElement("td");
+        debtor.setAttribute("class", "text-end");
         amount.innerText = balance[key];
         const a = document.createElement("a");
         a.href = `/balance/${key}`;
         a.innerText = key;
         debtor.appendChild(a);
-        table.appendChild(tr);
+        balanceTableBody.appendChild(tr);
         tr.appendChild(debtor);
         tr.appendChild(amount);
     });

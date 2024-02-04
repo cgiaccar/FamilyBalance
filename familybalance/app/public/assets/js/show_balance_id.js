@@ -3,6 +3,7 @@ const url = window.location.href;
 const parts = url.split("/");
 const id = parts[parts.length - 1]; // Other user ID (their username)
 let username = "";
+const tableBody = document.getElementById("balance_table_body");
 
 // Add other user's username/id to the title
 const title = document.getElementById('title');
@@ -22,7 +23,6 @@ getBalanceID().then(balance => {
 
 // Add a row to the table
 function addToBalanceTable(expense) {
-    const table = document.querySelector("#balance_table");
     const tr = document.createElement("tr");
     const date = document.createElement("td");
     const debt = document.createElement("td");
@@ -51,7 +51,7 @@ function addToBalanceTable(expense) {
         }
     }
 
-    table.appendChild(tr);
+    tableBody.appendChild(tr);
     tr.appendChild(date);
     tr.appendChild(debt);
     tr.appendChild(details);

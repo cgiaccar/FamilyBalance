@@ -1,5 +1,5 @@
 // Useful elements
-const table = document.getElementById('user_table');
+const tableBody = document.getElementById('user_table_body');
 
 // Shows user info in its table
 getUser().then(user => {
@@ -10,7 +10,7 @@ getUser().then(user => {
     username.innerText = user.username;
     name.innerText = user.name;
     surname.innerText = user.surname;
-    table.appendChild(tr);
+    tableBody.appendChild(tr);
     tr.appendChild(username);
     tr.appendChild(name);
     tr.appendChild(surname);
