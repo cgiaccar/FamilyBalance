@@ -28,7 +28,7 @@ function verify(req, res, next) {
     if (req.session.user) {
         next();
     } else {
-        res.status(403).send("Non autenticato!");
+        res.sendFile(`${__dirname}/public/error.html`);
     }
 }
 
