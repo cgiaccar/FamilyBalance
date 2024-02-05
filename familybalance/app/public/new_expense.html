@@ -39,14 +39,14 @@
 
     <div class="container-xl">
         <h1>Aggiungi una spesa</h1>
-        <form id="new_expense_form">
+        <form id="new_expense_form" novalidate>
             <div class="row mb-3">
                 <label for="date" class="col-sm-2 col-form-label">Data:</label>
                 <div class="col-sm-2">
-                    <input type="date" id="date" name="date" class="form-control" />
-                </div>
-                <div class="col-sm-5">
-                    <span id="feedback_date" class="feedback"></span>
+                    <input type="date" id="date" name="date" class="form-control" required />
+                    <div id="feedback_date" class="invalid-feedback">
+                        Inserisci una data.
+                    </div>
                 </div>
             </div>
             <br>
@@ -60,20 +60,23 @@
             <div class="row mb-3">
                 <label for="category" class="col-sm-2 col-form-label">Categoria:</label>
                 <div class="col-sm-5">
-                    <input type="text" id="category" name="category" class="form-control" /><br>
-                </div>
-                <div class="col-sm-3">
-                    <span id="feedback_category" class="feedback"></span>
+                    <input type="text" id="category" name="category" class="form-control"
+                        placeholder="Qualcosa per capire di che si tratta..." required />
+                    <div id="feedback_category" class="invalid-feedback">
+                        Inserisci una categoria.
+                    </div>
+                    <br>
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="total_cost" class="col-sm-2 col-form-label">Costo totale:</label>
                 <div class="col-sm-2">
-                    <input type="number" step="0.01" id="total_cost" name="total_cost" value="0"
-                        class="form-control" /><br>
-                </div>
-                <div class="col-sm-6">
-                    <span id="feedback_total" class="feedback"></span>
+                    <input type="number" step="0.01" id="total_cost" name="total_cost" value="0" class="form-control"
+                        required />
+                    <div id="feedback_total" class="invalid-feedback">
+
+                    </div>
+                    <br>
                 </div>
             </div>
             <div id="users">
@@ -81,6 +84,9 @@
                     <div class="col-sm-4">
                         <label for="name1" class="form-label">Utente:</label>
                         <input type="text" list="users_list" id="name1" name="name1" class="name form-control" />
+                        <div id="feedback_user1" class="invalid-feedback">
+
+                        </div>
                     </div>
                     <div class="col-sm-3">
                         <label for="quota1" class="form-label">Spesa:</label>
@@ -97,7 +103,6 @@
             <br />
             <button class="btn btn-light" type="submit">
                 <span> <i class="bi bi-plus-circle"></i></span> Aggiungi la spesa</button>
-            <span id="feedback_general" class="feedback"></span>
         </form>
     </div>
 

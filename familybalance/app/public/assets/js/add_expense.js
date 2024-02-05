@@ -1,10 +1,14 @@
 // Useful elements
 const form = document.getElementById('new_expense_form');   // The form
-const totalCostEl = document.getElementById('total_cost');    // Total cost of the new expense
+const dateEl = document.getElementById('date');
+const descriptionEl = document.getElementById('description');
+const categoryEl = document.getElementById('category');
+const totalCostEl = document.getElementById('total_cost');
+const usersEl = document.getElementById('users');
 const quota1 = document.getElementById('quota1');   // Quota of the first user
 const name1 = document.getElementById('name1');   // Name of the first user
-let loggedUsername = "";     // Name of the logged user
 const usersList = document.getElementById('users_list');  // List of all users for hints
+let loggedUsername = "";
 let usernames = []; // Array with all valid usernames
 
 // Fill user1 with default value "name = logged user"
@@ -31,37 +35,29 @@ getSearchedUsers("").then(users => {
 });
 
 
-// At submit, takes data and fetches api
+// At submit, checks data and sends it to api
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const feedbackDate = document.getElementById('feedback_date');
-    const feedbackCategory = document.getElementById('feedback_category');
+    // Removes previous invalid checks
+    document.querySelectorAll('.is-invalid').forEach(el => {
+        el.classList.remove('is-invalid');
+    });
+    form.classList.remove('was-validated');
+
     const feedbackTotal = document.getElementById('feedback_total');
-    const feedbackGeneral = document.getElementById('feedback_general');
 
-    // Empty previous messages
-    feedbackDate.innerHTML = "";
-    feedbackCategory.innerHTML = "";
-    feedbackTotal.innerHTML = "";
-    feedbackGeneral.innerHTML = "";
+    // Check if fields are set
+    if (!form.checkValidity()) {
+        feedbackTotal.innerText = "Inserisci un numero valido (due cifre dopo la virgola).";
+        form.classList.add('was-validated');
+        return;
+    }
 
-    const date = document.getElementById('date').value.trim();
-    const description = document.getElementById('description').innerText.trim();
-    const category = document.getElementById('category').value.trim();
+    const date = dateEl.value.trim();
+    const description = descriptionEl.innerText;
+    const category = categoryEl.value.trim();
     const totalCost = totalCostEl.value.trim();
-
-    // Date must be set
-    if (!date) {
-        feedbackDate.textContent = 'Per favore, inserire una data';
-        return;
-    }
-
-    // Category must be set
-    if (!category) {
-        feedbackCategory.textContent = 'Per favore, inserire una categoria';
-        return;
-    }
 
     const names = document.querySelectorAll('.name');   // All elements of class 'name'
     const quotas = document.querySelectorAll('.quota'); // All elements of class 'quota'
@@ -72,9 +68,11 @@ form.addEventListener('submit', async (event) => {
         let quota = quotas[index];
         if (quota.value && name.value) {  // If the values are filled
             if (!usernames.includes(name.value)) {    // Check if inserted user exists
-                feedbackGeneral.textContent = 'Attenzione! l\'utente \"' + name.value + '\" non esiste.';
+                const feedbackUser = document.getElementById('feedback_user' + (index + 1));
+                const userEl = document.getElementById('name' + (index + 1));
+                feedbackUser.innerText = 'Attenzione! l\'utente \"' + name.value + '\" non esiste.';
+                userEl.classList.add('is-invalid');
                 stop = true;
-                return;
             }
             users[name.value] = quota.value;
         }
@@ -88,7 +86,8 @@ form.addEventListener('submit', async (event) => {
 
     // Can't have a refund with more than 2 users or a single user
     if (totalCost === "0" && Object.keys(users).length !== 2) {
-        feedbackTotal.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per effettuare un rimborso';
+        feedbackTotal.innerText = 'Per effettuare un rimborso (costo totale = 0), indica il tuo nome e quello di un altro utente.';
+        totalCostEl.classList.add('is-invalid');
         return;
     }
 
@@ -100,7 +99,8 @@ form.addEventListener('submit', async (event) => {
         }
     });
     if (totalCost != sum) {
-        feedbackTotal.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
+        feedbackTotal.innerText = "Attenzione! La somma delle quote deve essere pari al costo totale";
+        totalCostEl.classList.add('is-invalid');
         return;
     }
 
@@ -117,7 +117,7 @@ form.addEventListener('submit', async (event) => {
 
     // Feedback from database
     if (!response.ok) {
-        feedbackGeneral.textContent = 'Aggiunta di dati fallita!';
+        alert("Aggiunta di dati fallita!");
         return;
     } else {
         alert("Spesa aggiunta con successo!");
@@ -150,10 +150,15 @@ function addUser(i) {
     newUser.setAttribute("class", "row");
 
     // Create divs for columns
-    const divLabel = document.createElement("div");
-    divLabel.setAttribute("class", "col-sm-4");
+    const divName = document.createElement("div");
+    divName.setAttribute("class", "col-sm-4");
     const divQuota = document.createElement("div");
     divQuota.setAttribute("class", "col-sm-3");
+
+    // Create div for feedback
+    const divFeedback = document.createElement("div");
+    divFeedback.setAttribute("id", "feedback_user" + i);
+    divFeedback.setAttribute("class", "invalid-feedback")
 
     // Create label and input for name_i
     const nameLabel = document.createElement("label");
@@ -181,11 +186,12 @@ function addUser(i) {
 
     const br = document.createElement("br");
 
-    divLabel.appendChild(nameLabel);
-    divLabel.appendChild(nameInput);
+    divName.appendChild(nameLabel);
+    divName.appendChild(nameInput);
+    nameInput.after(divFeedback);
     divQuota.appendChild(quotaLabel);
     divQuota.appendChild(quotaInput);
-    newUser.appendChild(divLabel);
+    newUser.appendChild(divName);
     newUser.appendChild(divQuota);
 
     users.appendChild(newUser)
