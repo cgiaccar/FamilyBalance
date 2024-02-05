@@ -21,7 +21,14 @@ getBalance().then(balance => {
             const debtor = document.createElement("td");
             const amount = document.createElement("td");
             debtor.setAttribute("class", "text-end");
-            amount.innerText = balance[key];
+            let sign = "";
+            let color = "red";
+            if (balance[key] > 0) {
+                sign = "+";
+                color = "green";
+            }
+            amount.innerText = sign + balance[key] + " €";
+            amount.style.color = color;
             const a = document.createElement("a");
             a.href = `/balance/${key}`;
             a.innerText = key;

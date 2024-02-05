@@ -60,15 +60,19 @@ function addToBalanceTable(expense) {
     if (expense.total_cost === "0") {   // it's a refund
         const amount = expense.users[username]; // user's amount
         if (amount < 0) {    // if negative
-            debt.innerText = id + " ti ha rimborsato " + amount.replace("-", "")    // other is refunding user
+            debt.innerText = id + " ti ha rimborsato " + amount.replace("-", "") + " €"    // other is refunding user
+            debt.style.color = "green";
         } else {
-            debt.innerText = "Hai rimborsato " + amount + " a " + id    // user is refunding other
+            debt.innerText = "Hai rimborsato " + amount + " € a " + id    // user is refunding other
+            debt.style.color = "red";
         }
     } else {
         if (expense.host === username) {  // if user is host
-            debt.innerText = id + ' ti deve ' + expense.users[id];   // other user owes user this amount
+            debt.innerText = id + " ti deve " + expense.users[id] + " €";   // other user owes user this amount
+            debt.style.color = "green";
         } else {    // other user is host
-            debt.innerText = 'Devi ' + expense.users[username] + ' a ' + id; // user owes other this amount
+            debt.innerText = "Devi " + expense.users[username] + " € a " + id; // user owes other this amount
+            debt.style.color = "red";
         }
     }
 

@@ -59,7 +59,7 @@ function addExpense(expense) {
     a.innerText = day + "-" + month + "-" + year;
     date.appendChild(a);
     category.innerText = expense.category;
-    totalCost.innerText = expense.total_cost;
+    totalCost.innerText = expense.total_cost + " €";
     host.innerText = expense.host;
     tableBody.appendChild(tr);
     tr.appendChild(date);

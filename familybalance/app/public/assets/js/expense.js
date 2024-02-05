@@ -44,11 +44,11 @@ getExpense().then(expense => {
     showDate.innerText = getDay(expense.date) + "-" + month + "-" + year;
     showDescription.innerText = expense.description;
     showCategory.innerText = expense.category;
-    showTotalCost.innerText = expense.total_cost;
+    showTotalCost.innerText = expense.total_cost + " €";
     Object.keys(expense.users).forEach(property => { //users is an object with a property named after each user with their quota
         showUser.innerText += property + "\n ";
-        showUserQuota.innerText += expense.users[property] + "\n ";
-    })
+        showUserQuota.innerText += expense.users[property] + " €\n ";
+    });
     showHost.innerText = expense.host;
 
     // Fill the modify_form
