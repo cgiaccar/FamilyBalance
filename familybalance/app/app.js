@@ -57,10 +57,10 @@ app.post('/api/auth/signup', async (req, res) => {
             req.session.user = newUser;
             res.redirect('/budget/whoami');
         } else {
-            res.status(403).send("Username già preso!");
+            res.status(403).send(); // Not authenticated (username already taken)
         }
     } catch (error) {
-        console.log(error);
+        res.status(500).send(); // Server error
     }
 });
 
