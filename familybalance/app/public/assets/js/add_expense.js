@@ -47,7 +47,7 @@ form.addEventListener('submit', async (event) => {
     feedbackGeneral.innerHTML = "";
 
     const date = document.getElementById('date').value.trim();
-    const description = document.getElementById('description').value.trim();
+    const description = document.getElementById('description').innerText.trim();
     const category = document.getElementById('category').value.trim();
     const totalCost = totalCostEl.value.trim();
 
@@ -121,7 +121,8 @@ form.addEventListener('submit', async (event) => {
         return;
     } else {
         alert("Spesa aggiunta con successo!");
-        window.location.reload();
+        const newId = await response.json();
+        window.location.replace(`/budget/${year}/${month}/${newId}`);  // Go to new expense
         return;
     }
 });

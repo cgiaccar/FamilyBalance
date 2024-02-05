@@ -190,8 +190,9 @@ app.post("/api/budget/:year/:month", verify, async (req, res) => {
     }
 
     try {
-        await expenses.collection("expenses").insertOne(newExpense);
-        res.status(201).json(); // Send ok status
+        const response = await expenses.collection("expenses").insertOne(newExpense);
+        const newId = response.insertedId.toString();
+        res.json(newId);  // Send ok status and the new id
     } catch (error) {
         console.log(error);
         res.status(500).json(); // Send server error status

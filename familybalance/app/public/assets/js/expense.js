@@ -119,7 +119,7 @@ modifyForm.addEventListener("submit", async (event) => {
     }
 
     const date = document.getElementById('date').value.trim();
-    const description = document.getElementById('description').value.trim();
+    const description = document.getElementById('description').innerText.trim();
     const category = document.getElementById('category').value.trim();
     const totalCost = document.getElementById('total_cost').value.trim();
 
@@ -268,7 +268,7 @@ deleteButton.addEventListener("click", async (event) => {
             const response = await fetch(`/api/budget/${year}/${month}/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 alert("Spesa eliminata con successo!");
-                window.location = document.referrer;    // Back to previous page
+                window.location.replace(`/budget`);  // Back to expenses' page
             } else {
                 alert("Qualcosa è andato storto, eliminazione fallita.")
             }
