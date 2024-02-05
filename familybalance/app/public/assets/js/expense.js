@@ -8,11 +8,11 @@ const deleteButton = document.getElementById('delete_button');
 const modifyButton = document.getElementById('modify_button');
 const refreshButton = document.getElementById('refresh_button');
 const hiddenDiv = document.getElementById('hidden_div')
-const modifyForm = document.getElementById('modify_form');
-const feedback = document.getElementById('feedback');
+const form = document.getElementById('modify_form');
+const totalCostEl = document.getElementById('total_cost');
+const usersList = document.getElementById('users_list');  // List of all users for hints
 let loggedUsername = "";
 let hostUsername = "";
-const usersList = document.getElementById('users_list');  // List of all users for hints
 let usernames = []; // Array with all valid usernames
 
 
@@ -103,31 +103,41 @@ modifyButton.addEventListener("click", (event) => {
     }
 });
 
+// Refresh page to delete non-confirmed changes
 refreshButton.addEventListener("click", (event) => {
     event.preventDefault();
     window.location.reload();
 });
 
-// Calls modify/put from api (same as newExpense, but with PUT and reload page at the end)
-modifyForm.addEventListener("submit", async (event) => {
+// At submit, checks data and sends it to api to modify
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const feedback = document.getElementById('feedback');
 
     if (loggedUsername !== hostUsername) {
-        feedback.textContent = 'Non puoi modificare questa spesa!';
+        alert('Non puoi modificare questa spesa!');
+        window.location.reload();
+        return;
+    }
+
+    // Removes previous invalid checks
+    document.querySelectorAll('.is-invalid').forEach(el => {
+        el.classList.remove('is-invalid');
+    });
+    form.classList.remove('was-validated');
+
+    const feedbackTotal = document.getElementById('feedback_total');
+
+    // Check if fields are set
+    if (!form.checkValidity()) {
+        feedbackTotal.innerText = "Inserisci un numero valido (due cifre dopo la virgola).";
+        form.classList.add('was-validated');
         return;
     }
 
     const date = document.getElementById('date').value.trim();
     const description = document.getElementById('description').innerText.trim();
     const category = document.getElementById('category').value.trim();
-    const totalCost = document.getElementById('total_cost').value.trim();
-
-    // Date must be set
-    if (!date) {
-        feedback.textContent = 'Per favore, inserire una data';
-        return;
-    }
+    const totalCost = totalCostEl.value.trim();
 
     const names = document.querySelectorAll('.name'); //All elements of class 'name'
     const quotas = document.querySelectorAll('.quota'); //All elements of class 'quota'
@@ -138,9 +148,11 @@ modifyForm.addEventListener("submit", async (event) => {
         let quota = quotas[index];
         if (quota.value && name.value) {  // If the values are filled
             if (!usernames.includes(name.value)) {    // Check if inserted user exists
-                feedback.textContent = 'Attenzione! l\'utente \"' + name.value + '\" non esiste.';
+                const feedbackUser = document.getElementById('feedback_user' + (index + 1));
+                const userEl = document.getElementById('name' + (index + 1));
+                feedbackUser.innerText = 'Attenzione! l\'utente \"' + name.value + '\" non esiste.';
+                userEl.classList.add('is-invalid');
                 stop = true;
-                return;
             }
             users[name.value] = quota.value;
         }
@@ -154,7 +166,8 @@ modifyForm.addEventListener("submit", async (event) => {
 
     // Can't have a refund with more than 2 users or a single user
     if (totalCost === "0" && Object.keys(users).length !== 2) {
-        feedback.textContent = 'Per favore, indicare il tuo nome e quello di un altro utente per un rimborso';
+        feedbackTotal.innerText = 'Per effettuare un rimborso (costo totale = 0), indica il tuo nome e quello di un altro utente.';
+        totalCostEl.classList.add('is-invalid');
         return;
     }
 
@@ -166,11 +179,12 @@ modifyForm.addEventListener("submit", async (event) => {
         }
     });
     if (totalCost != sum) {
-        feedback.textContent = "Attenzione! La somma delle quote deve essere pari al costo totale";
+        feedbackTotal.innerText = "Attenzione! La somma delle quote deve essere pari al costo totale";
+        totalCostEl.classList.add('is-invalid');
         return;
     }
 
-    // Fetch api to add new expense
+    // Fetch api to modify the expense
     const newYear = getYear(date);
     const newMonth = getMonth(date);
     const response = await fetch(`/api/budget/${newYear}/${newMonth}/${id}`, {
@@ -183,7 +197,7 @@ modifyForm.addEventListener("submit", async (event) => {
 
     // Feedback from database
     if (!response.ok) {
-        feedback.textContent = 'Modifica fallita!';
+        alert("Modifica fallita!");
         return;
     } else {
         alert('Spesa modificata con successo!');
@@ -192,7 +206,7 @@ modifyForm.addEventListener("submit", async (event) => {
     }
 });
 
-// Calls addUser and then adds the event listener (same as addExpense)
+// Calls addUser and then adds the event listener
 function addUserWithTrigger(i) {
     addUser(i);
     document.getElementById('quota' + i).addEventListener('input', function () {
@@ -200,7 +214,7 @@ function addUserWithTrigger(i) {
     }, { once: true });
 }
 
-// Adds a new user to the modify_form (same as addExpense)
+// Adds a new user to the form
 function addUser(i) {
     const users = document.getElementById('users');
 
@@ -210,10 +224,15 @@ function addUser(i) {
     newUser.setAttribute("class", "row");
 
     // Create divs for columns
-    const divLabel = document.createElement("div");
-    divLabel.setAttribute("class", "col-sm-4");
+    const divName = document.createElement("div");
+    divName.setAttribute("class", "col-sm-4");
     const divQuota = document.createElement("div");
     divQuota.setAttribute("class", "col-sm-3");
+
+    // Create div for feedback
+    const divFeedback = document.createElement("div");
+    divFeedback.setAttribute("id", "feedback_user" + i);
+    divFeedback.setAttribute("class", "invalid-feedback")
 
     // Create label and input for name_i
     const nameLabel = document.createElement("label");
@@ -241,11 +260,12 @@ function addUser(i) {
 
     const br = document.createElement("br");
 
-    divLabel.appendChild(nameLabel);
-    divLabel.appendChild(nameInput);
+    divName.appendChild(nameLabel);
+    divName.appendChild(nameInput);
+    nameInput.after(divFeedback);
     divQuota.appendChild(quotaLabel);
     divQuota.appendChild(quotaInput);
-    newUser.appendChild(divLabel);
+    newUser.appendChild(divName);
     newUser.appendChild(divQuota);
 
     users.appendChild(newUser)
@@ -258,7 +278,7 @@ deleteButton.addEventListener("click", async (event) => {
     event.preventDefault();
 
     if (loggedUsername !== hostUsername) {
-        feedback.textContent = 'Non puoi eliminare questa spesa!';
+        alert('Non puoi eliminare questa spesa!');
         return;
     }
 

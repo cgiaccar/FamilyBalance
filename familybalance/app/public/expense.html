@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="../../../assets/css/style.css" />
     <script language="javascript" src="../../../bootstrap/js/bootstrap.min.js" defer></script>
     <script src="../../../assets/js/to_top_button.js" defer></script>
-    <script src="../../../assets/js/expense.js" defer></script>
     <script src="../../../assets/js/navbar.js" defer></script>
+    <script src="../../../assets/js/expense.js" defer></script>
 </head>
 
 <body>
@@ -74,14 +74,15 @@
         <div class="container" id="hidden_div" style="display: none;">
             <br>
             <h1>Modifica la spesa</h1>
-            <form id="modify_form">
+
+            <form id="modify_form" novalidate>
                 <div class="row mb-3">
                     <label for="date" class="col-sm-2 col-form-label">Data:</label>
                     <div class="col-sm-2">
-                        <input type="date" id="date" name="date" class="form-control" />
-                    </div>
-                    <div class="col-sm-5">
-                        <span id="feedback_date" class="feedback"></span>
+                        <input type="date" id="date" name="date" class="form-control" required />
+                        <div id="feedback_date" class="invalid-feedback">
+                            Inserisci una data.
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -95,20 +96,23 @@
                 <div class="row mb-3">
                     <label for="category" class="col-sm-2 col-form-label">Categoria:</label>
                     <div class="col-sm-5">
-                        <input type="text" id="category" name="category" class="form-control" /><br>
-                    </div>
-                    <div class="col-sm-3">
-                        <span id="feedback_category" class="feedback"></span>
+                        <input type="text" id="category" name="category" class="form-control"
+                            placeholder="Qualcosa per capire di che si tratta..." required />
+                        <div id="feedback_category" class="invalid-feedback">
+                            Inserisci una categoria.
+                        </div>
+                        <br>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="total_cost" class="col-sm-2 col-form-label">Costo totale:</label>
                     <div class="col-sm-2">
                         <input type="number" step="0.01" id="total_cost" name="total_cost" value="0"
-                            class="form-control" /><br>
-                    </div>
-                    <div class="col-sm-6">
-                        <span id="feedback_total" class="feedback"></span>
+                            class="form-control" required />
+                        <div id="feedback_total" class="invalid-feedback">
+
+                        </div>
+                        <br>
                     </div>
                 </div>
                 <div id="users">
@@ -122,10 +126,8 @@
                 <button id="refresh_button" class="btn btn-light col-3" type="button">
                     <span> <i class=" bi bi-arrow-counterclockwise"></i></span> Annulla</button>
             </form>
-            <br>
-            <div id="feedback"></div>
-            <br>
         </div>
+
     </div>
 
     <br><br><br><br>

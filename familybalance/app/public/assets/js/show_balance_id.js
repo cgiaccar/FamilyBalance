@@ -36,7 +36,7 @@ checkIfUserExists(id).then(exists => {
         title.innerHTML = "Errore!";
         title.style.display = "";
         const message = document.createElement("h3");
-        message.innerText = "L'utente \'" + id + "\' non esiste.";
+        message.innerText = "L'utente \"" + id + "\" non esiste.";
         title.after(message);
     }
 });

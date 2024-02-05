@@ -1,10 +1,6 @@
 // Useful elements
 const form = document.getElementById('new_expense_form');   // The form
-const dateEl = document.getElementById('date');
-const descriptionEl = document.getElementById('description');
-const categoryEl = document.getElementById('category');
 const totalCostEl = document.getElementById('total_cost');
-const usersEl = document.getElementById('users');
 const quota1 = document.getElementById('quota1');   // Quota of the first user
 const name1 = document.getElementById('name1');   // Name of the first user
 const usersList = document.getElementById('users_list');  // List of all users for hints
@@ -35,7 +31,7 @@ getSearchedUsers("").then(users => {
 });
 
 
-// At submit, checks data and sends it to api
+// At submit, checks data and sends it to api to add
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -54,9 +50,9 @@ form.addEventListener('submit', async (event) => {
         return;
     }
 
-    const date = dateEl.value.trim();
-    const description = descriptionEl.innerText;
-    const category = categoryEl.value.trim();
+    const date = document.getElementById('date').value.trim();
+    const description = document.getElementById('description').innerText;
+    const category = document.getElementById('category').value.trim();
     const totalCost = totalCostEl.value.trim();
 
     const names = document.querySelectorAll('.name');   // All elements of class 'name'
@@ -104,7 +100,7 @@ form.addEventListener('submit', async (event) => {
         return;
     }
 
-    // Fetch api to add new expense
+    // Fetch api to add the new expense
     const year = getYear(date);
     const month = getMonth(date);
     const response = await fetch(`/api/budget/${year}/${month}`, {
