@@ -70,13 +70,18 @@ app.post('/api/auth/signin', async (req, res) => {
     const client = new MongoClient(uri);
     await client.connect();
     const users = client.db("users");
-    const dbUser = await users.collection("users").findOne({ username: req.body.username });
 
-    if (dbUser && dbUser.password === req.body.password) {
-        req.session.user = dbUser;
-        res.redirect('/budget/whoami');
-    } else {
-        res.status(403).send("Non autenticato!");
+    try {
+        const dbUser = await users.collection("users").findOne({ username: req.body.username });
+
+        if (dbUser && dbUser.password === req.body.password) {
+            req.session.user = dbUser;
+            res.redirect('/budget/whoami');
+        } else {
+            res.status(403).send(); // Not authenticated (wrong username/password)
+        }
+    } catch (error) {
+        res.status(500).send(); // Server error
     }
 });
 
