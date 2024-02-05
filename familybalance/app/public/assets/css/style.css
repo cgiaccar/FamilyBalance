@@ -7,6 +7,11 @@ h1 {
     padding-bottom: 1em;
 }
 
+.container-xl {
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
 .navbar-brand {
     color:rgb(150, 73, 205);
     margin-left: 1em;

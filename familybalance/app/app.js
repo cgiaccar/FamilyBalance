@@ -474,5 +474,10 @@ app.get("/balance/:id", verify, async (req, res) => {
 // ############################################################
 
 
+// Default: all other pages redirect to index
+app.get('*', (req, res) => {
+    res.redirect('/');
+});
+
 
 app.listen(3000); // Listen on port 3000
