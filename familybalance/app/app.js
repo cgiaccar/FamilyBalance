@@ -86,10 +86,9 @@ app.post("/api/auth/signout", verify, async (req, res) => {
     req.session.destroy(function (err) {
         if (err) {
             console.log(err);
-            res.status(500);    // Error
+            res.status(500).send();    // Error
         } else {
-            res.status(200);    // OK
-            res.redirect('/');
+            res.status(200).send();    // OK
         }
     });
 });
@@ -363,6 +362,23 @@ app.get("/api/users/search", verify, async (req, res) => {
     ];
 
     res.json(await users.collection("users").find(query).toArray());
+});
+
+
+// Check username - checks if the username exists
+app.get("/api/users/check/:username", async (req, res) => {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const users = client.db("users");
+
+    const username = req.params.username;
+
+    const response = await users.collection("users").findOne({ username: username });
+    if (!response) {
+        res.status(404).send();    // Not found
+    } else {
+        res.status(200).send();    // Ok
+    }
 });
 
 

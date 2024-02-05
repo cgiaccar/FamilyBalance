@@ -3,23 +3,44 @@ const url = window.location.href;
 const parts = url.split("/");
 const id = parts[parts.length - 1]; // Other user ID (their username)
 let username = "";
+const table = document.getElementById("balance_table");
 const tableBody = document.getElementById("balance_table_body");
-
-// Add other user's username/id to the title
 const title = document.getElementById('title');
-title.innerHTML += id;
 
-// Get logged user's username
-getUser().then(user => {
-    username = user.username;
+// Check if user exists and then prepares page
+checkIfUserExists(id).then(exists => {
+    if (exists) { // User exists
+        // Add other user's username/id to the title
+        title.innerHTML += id;
+        title.style.display = "";
+
+        // Get logged user's username
+        getUser().then(user => {
+            username = user.username;
+        });
+
+        // Get balance with other user and fill the table
+        getBalanceID().then(balance => {
+            if (balance.length > 0) {
+                table.style.display = "";
+                balance.forEach(expense => {
+                    addToBalanceTable(expense);
+                });
+            } else {    // No balance yet
+                const message = document.createElement("h3");
+                message.innerText = "Non ci sono movimenti tra te e " + id + ".";
+                title.after(message);
+            }
+        });
+    } else {    // User does NOT exist
+        title.innerHTML = "Errore!";
+        title.style.display = "";
+        const message = document.createElement("h3");
+        message.innerText = "L'utente \'" + id + "\' non esiste.";
+        title.after(message);
+    }
 });
 
-// Get balance with other user and fill the table
-getBalanceID().then(balance => {
-    balance.forEach(expense => {
-        addToBalanceTable(expense);
-    });
-});
 
 // Add a row to the table
 function addToBalanceTable(expense) {
@@ -83,4 +104,14 @@ async function getUser() {
     const response = await fetch("/api/budget/whoami");
     const user = await response.json();
     return user;
+}
+
+// Check if username exists using api
+async function checkIfUserExists(id) {
+    const response = await fetch(`/api/users/check/${id}`);
+    if (!response.ok) {
+        return false;
+    } else {
+        return true;
+    }
 }

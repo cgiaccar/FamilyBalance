@@ -3,7 +3,9 @@ let loggedUsername = "";
 const searchForm = document.getElementById('search_form');
 const searchTableBody = document.getElementById('search_table_body');
 const searchTable = document.getElementById('search_table');
+const balanceTable = document.getElementById('balance_table');
 const balanceTableBody = document.getElementById('balance_table_body');
+const title = document.getElementById('title');
 
 // Takes logged user's username
 getUser().then(user => {
@@ -12,20 +14,27 @@ getUser().then(user => {
 
 // Shows balance of logged user
 getBalance().then(balance => {
-    Object.keys(balance).forEach(key => {
-        const tr = document.createElement("tr");
-        const debtor = document.createElement("td");
-        const amount = document.createElement("td");
-        debtor.setAttribute("class", "text-end");
-        amount.innerText = balance[key];
-        const a = document.createElement("a");
-        a.href = `/balance/${key}`;
-        a.innerText = key;
-        debtor.appendChild(a);
-        balanceTableBody.appendChild(tr);
-        tr.appendChild(debtor);
-        tr.appendChild(amount);
-    });
+    if (Object.keys(balance).length > 0) {
+        balanceTable.style.display = "";
+        Object.keys(balance).forEach(key => {
+            const tr = document.createElement("tr");
+            const debtor = document.createElement("td");
+            const amount = document.createElement("td");
+            debtor.setAttribute("class", "text-end");
+            amount.innerText = balance[key];
+            const a = document.createElement("a");
+            a.href = `/balance/${key}`;
+            a.innerText = key;
+            debtor.appendChild(a);
+            balanceTableBody.appendChild(tr);
+            tr.appendChild(debtor);
+            tr.appendChild(amount);
+        });
+    } else {    // No balance yet
+        const message = document.createElement("h3");
+        message.innerText = "Ops, non hai un bilancio!\nTorna quando avrai creato delle spese, oppure cerca un utente qui sotto:"
+        title.after(message);
+    }
 });
 
 // Clear table and then show users resulting from search

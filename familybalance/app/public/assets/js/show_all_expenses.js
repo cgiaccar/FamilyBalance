@@ -5,13 +5,21 @@ const yearSelector = document.getElementById('input_year');
 const monthSelector = document.getElementById('input_month');
 const searchForm = document.getElementById('search_form');
 const queryInput = document.getElementById('query');
+const filtersAndTable = document.getElementById('filters_and_table');   // Div with stuff that needs to appear
 
-// Show all expenses in the big table (index.html)
+// Show all expenses in the big table
 // Takes expenses and for each one shows it
 getExpenses().then(expenses => {
-    expenses.forEach(expense => {
-        addExpense(expense);
-    });
+    if (expenses.length > 0) {
+        filtersAndTable.style.display = "";
+        expenses.forEach(expense => {
+            addExpense(expense);
+        });
+    } else {    // No expenses yet
+        const message = document.createElement("h3");
+        message.innerText = "Ops, non hai mai effettuato delle spese!\nUsa il pulsante qui sotto per crearne una nuova:"
+        filtersAndTable.before(message);
+    }
 });
 
 // Fill year selector
