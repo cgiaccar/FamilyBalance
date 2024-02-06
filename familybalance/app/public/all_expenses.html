@@ -41,6 +41,7 @@
         <h1>Ecco le tue spese!</h1>
 
         <div id="filters_and_table" style="display: none;">
+
             <form id="filter_form" class="row gap-3">
                 <select name="input_year" id="input_year" class="form-select col">
                     <option value="">--- Seleziona un anno ---</option>
@@ -63,6 +64,7 @@
                 <button class="btn btn-light col-sm-2" type="submit">Filtra!</button>
             </form>
             <br>
+
             <form id="search_form" class="row gap-3">
                 <label for="query" class="col col-auto form-label">Cerca una spesa:</label>
                 <input type="text" name="query" id="query" class="col col-md-5 form-control w-25"
@@ -70,13 +72,14 @@
                 <button class="btn btn-light col-md-1" type="submit">Cerca!</button>
             </form>
             <br>
-            <table class="table table-striped rounded-3 overflow-hidden" id="expenses_table">
+
+            <table class="table table-hover table-striped rounded-3 overflow-hidden" id="expenses_table">
                 <thead>
                     <tr>
                         <th>Data</th>
                         <th>Categoria</th>
                         <th>Costo totale</th>
-                        <th>Pagato da</th>
+                        <th>Creata da</th>
                     </tr>
                 </thead>
                 <tbody id="expenses_table_body" class="table-group-divider">
@@ -86,7 +89,7 @@
         </div>
 
         <br>
-        <a href="/budget/add" class="btn btn-light">
+        <a href="/budget/add" class="btn btn-light col-md-3">
             <span> <i class="bi bi-plus-circle"> </i></span> Aggiungi una spesa!</a>
     </div>
 

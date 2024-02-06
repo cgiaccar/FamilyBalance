@@ -51,16 +51,20 @@ function addExpense(expense) {
     const category = document.createElement("td");
     const totalCost = document.createElement("td");
     const host = document.createElement("td");
-    const a = document.createElement("a");
+
     const year = getYear(expense.date);
     const month = getMonth(expense.date);
     const day = getDay(expense.date);
-    a.href = `/budget/${year}/${month}/${expense._id}`;
-    a.innerText = day + "-" + month + "-" + year;
-    date.appendChild(a);
+    date.innerText = day + "-" + month + "-" + year;
     category.innerText = expense.category;
     totalCost.innerText = expense.total_cost + " €";
     host.innerText = expense.host;
+
+    tr.addEventListener('click', event => {
+        event.preventDefault();
+        window.location.href = `/budget/${year}/${month}/${expense._id}`;
+    });
+
     tableBody.appendChild(tr);
     tr.appendChild(date);
     tr.appendChild(category);

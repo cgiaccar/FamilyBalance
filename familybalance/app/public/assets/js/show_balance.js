@@ -29,10 +29,13 @@ getBalance().then(balance => {
             }
             amount.innerText = sign + balance[key] + " €";
             amount.style.color = color;
-            const a = document.createElement("a");
-            a.href = `/balance/${key}`;
-            a.innerText = key;
-            debtor.appendChild(a);
+            debtor.innerText = key;
+
+            tr.addEventListener('click', event => {
+                event.preventDefault();
+                window.location.href = `/balance/${key}`;
+            });
+
             balanceTableBody.appendChild(tr);
             tr.appendChild(debtor);
             tr.appendChild(amount);
@@ -58,13 +61,14 @@ searchForm.addEventListener("submit", async (event) => {
                 const name = document.createElement("td");
                 const surname = document.createElement("td");
 
+                username.innerText = user.username;
                 name.innerText = user.name;
                 surname.innerText = user.surname;
 
-                const a = document.createElement("a");
-                a.href = `/balance/${user.username}`;
-                a.innerText = user.username;
-                username.appendChild(a);
+                tr.addEventListener('click', event => {
+                    event.preventDefault();
+                    window.location.href = `/balance/${user.username}`;
+                });
 
                 searchTableBody.appendChild(tr);
                 tr.appendChild(username);

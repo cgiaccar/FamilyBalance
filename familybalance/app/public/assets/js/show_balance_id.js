@@ -3,7 +3,7 @@ const url = window.location.href;
 const parts = url.split("/");
 const id = parts[parts.length - 1]; // Other user ID (their username)
 let username = "";
-const table = document.getElementById("balance_table");
+const hiddenDiv = document.getElementById("hidden_div");
 const tableBody = document.getElementById("balance_table_body");
 const title = document.getElementById('title');
 
@@ -22,7 +22,7 @@ checkIfUserExists(id).then(exists => {
         // Get balance with other user and fill the table
         getBalanceID().then(balance => {
             if (balance.length > 0) {
-                table.style.display = "";
+                hiddenDiv.style.display = "";
                 balance.forEach(expense => {
                     addToBalanceTable(expense);
                 });
@@ -47,15 +47,10 @@ function addToBalanceTable(expense) {
     const tr = document.createElement("tr");
     const date = document.createElement("td");
     const debt = document.createElement("td");
-    const details = document.createElement("td");
     const year = getYear(expense.date);
     const month = getMonth(expense.date);
     const day = getDay(expense.date);
     date.innerText = day + '-' + month + '-' + year;
-    const a = document.createElement("a");
-    a.href = `/budget/${year}/${month}/${expense._id}`;
-    a.innerText = "(visualizza dettagli)";
-    details.appendChild(a);
 
     if (expense.total_cost === "0") {   // it's a refund
         const amount = expense.users[username]; // user's amount
@@ -76,10 +71,14 @@ function addToBalanceTable(expense) {
         }
     }
 
+    tr.addEventListener('click', event => {
+        event.preventDefault();
+        window.location.href = `/budget/${year}/${month}/${expense._id}`;
+    });
+
     tableBody.appendChild(tr);
     tr.appendChild(date);
     tr.appendChild(debt);
-    tr.appendChild(details);
 }
 
 // Utility functions to format date
