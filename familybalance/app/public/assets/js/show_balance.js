@@ -26,6 +26,8 @@ getBalance().then(balance => {
             if (balance[key] > 0) {
                 sign = "+";
                 color = "green";
+            } else if (balance[key] === 0) {
+                color = "green";
             }
             amount.innerText = sign + balance[key] + " €";
             amount.style.color = color;
