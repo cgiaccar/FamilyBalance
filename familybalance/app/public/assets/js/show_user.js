@@ -1,4 +1,4 @@
-// Shows user info in its card
+// Shows user info in the card
 getUser().then(user => {
     const username = document.getElementById("username");
     const name = document.getElementById("name");

@@ -33,6 +33,7 @@ getBalance().then(balance => {
             amount.style.color = color;
             debtor.innerText = key;
 
+            // Clickable table row to balance with other user
             tr.addEventListener('click', event => {
                 event.preventDefault();
                 window.location.href = `/balance/${key}`;
@@ -67,6 +68,7 @@ searchForm.addEventListener("submit", async (event) => {
                 name.innerText = user.name;
                 surname.innerText = user.surname;
 
+                // Clickable table row to balance with other user
                 tr.addEventListener('click', event => {
                     event.preventDefault();
                     window.location.href = `/balance/${user.username}`;

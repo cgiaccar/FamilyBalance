@@ -1,5 +1,5 @@
 // Useful elements
-const form = document.getElementById('new_expense_form');   // The form
+const form = document.getElementById('new_expense_form');
 const totalCostEl = document.getElementById('total_cost');
 const quota1 = document.getElementById('quota1');   // Quota of the first user
 const name1 = document.getElementById('name1');   // Name of the first user
@@ -41,6 +41,7 @@ form.addEventListener('submit', async (event) => {
     });
     form.classList.remove('was-validated');
 
+    // Feedback element of total_cost
     const feedbackTotal = document.getElementById('feedback_total');
 
     // Check if fields are set
@@ -73,7 +74,7 @@ form.addEventListener('submit', async (event) => {
             users[name.value] = quota.value;
         }
     });
-    if (stop) { return; }
+    if (stop) { return; }   // At least one user does not exists, return
 
     // Logged user must always appear (if only with quota = 0) (useful when lending money)
     if (!Object.hasOwn(users, loggedUsername)) {
@@ -123,7 +124,6 @@ form.addEventListener('submit', async (event) => {
     }
 });
 
-
 // Recursive event listener to add new users
 quota1.addEventListener('input', function () { addUserWithTrigger(2) }, { once: true });
 
@@ -140,7 +140,7 @@ function addUserWithTrigger(i) {
 function addUser(i) {
     const users = document.getElementById('users');
 
-    // Create div user_i
+    // Create div for user
     const newUser = document.createElement("div");
     newUser.setAttribute("id", "user" + i);
     newUser.setAttribute("class", "row");

@@ -61,11 +61,11 @@ getExpense().then(expense => {
         i++;
         // Add an empty line for the user
         addUser(i);
-        // Fill the new user and remove event listener
+        // Fill the user
         document.getElementById('name' + i).setAttribute("value", user);
         document.getElementById('quota' + i).setAttribute("value", expense.users[user]);
     });
-    // Add an empty user at the end
+    // Add an empty user with event listener at the end
     addUserWithTrigger(i + 1);
 
     // Get user info and set visibility of modify/delete buttons
@@ -125,6 +125,7 @@ form.addEventListener("submit", async (event) => {
     });
     form.classList.remove('was-validated');
 
+    // Feedback element of total_cost
     const feedbackTotal = document.getElementById('feedback_total');
 
     // Check if fields are set
@@ -218,7 +219,7 @@ function addUserWithTrigger(i) {
 function addUser(i) {
     const users = document.getElementById('users');
 
-    // Create div user_i
+    // Create div for user
     const newUser = document.createElement("div");
     newUser.setAttribute("id", "user" + i);
     newUser.setAttribute("class", "row");

@@ -5,20 +5,20 @@ const yearSelector = document.getElementById('input_year');
 const monthSelector = document.getElementById('input_month');
 const searchForm = document.getElementById('search_form');
 const queryInput = document.getElementById('query');
-const filtersAndTable = document.getElementById('filters_and_table');   // Div with stuff that needs to appear
+const hiddenDiv = document.getElementById('filters_and_table');   // Div with stuff that needs to appear
 
 // Show all expenses in the big table
 // Takes expenses and for each one shows it
 getExpenses().then(expenses => {
     if (expenses.length > 0) {
-        filtersAndTable.style.display = "";
+        hiddenDiv.style.display = "";
         expenses.forEach(expense => {
             addExpense(expense);
         });
     } else {    // No expenses yet
         const message = document.createElement("h3");
         message.innerText = "Ops, non hai mai effettuato delle spese!\nUsa il pulsante qui sotto per crearne una nuova:"
-        filtersAndTable.before(message);
+        hiddenDiv.before(message);
     }
 });
 
@@ -60,6 +60,7 @@ function addExpense(expense) {
     totalCost.innerText = expense.total_cost + " €";
     host.innerText = expense.host;
 
+    // Clickable table row to the expense
     tr.addEventListener('click', event => {
         event.preventDefault();
         window.location.href = `/budget/${year}/${month}/${expense._id}`;
@@ -79,7 +80,7 @@ filterForm.addEventListener("submit", async (event) => {
     queryInput.value = "";
     const year = yearSelector.value;
     const month = monthSelector.value;
-    if (!month) {
+    if (!month) {   // If month is not selected, use only year
         getExpensesYear(year).then(expenses => {
             expenses.forEach(expense => {
                 addExpense(expense);

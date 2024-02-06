@@ -71,6 +71,7 @@ function addToBalanceTable(expense) {
         }
     }
 
+    // Clickable table row to the expense
     tr.addEventListener('click', event => {
         event.preventDefault();
         window.location.href = `/budget/${year}/${month}/${expense._id}`;
