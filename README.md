@@ -53,6 +53,7 @@ La cartella `public` contiene i file per la gestione del lato client; è organiz
 ## Note di design
 Tutte le pagine HTML contengono la barra di navigazione e un footer con pulsante per tornare indietro e pulsante per tornare in cima alla pagina.  
 La home contiene le istruzioni d'uso per le altre pagine.  
+Se un nuovo utente non ha ancora creato spese, le pagine che dovrebbero mostrare bilanci o spese mostreranno invece messaggi che incoraggiano a crearne una.  
 Grazie alle classi di Bootstrap, tutti gli elementi delle pagine sono responsivi e si adattano alle dimensioni dello schermo.  
 Il controllo dell'autenticazione è effettuato in `app.js` con un middleware. Se un utente non autenticato cerca di accedere a pagine riservate, viene invece riportato alla pagina d'errore.  
 Tentare di accedere a pagine non esistenti riporta alla Homepage.  
