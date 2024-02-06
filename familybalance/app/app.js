@@ -60,6 +60,7 @@ app.post('/api/auth/signup', async (req, res) => {
             res.status(403).send(); // Not authenticated (username already taken)
         }
     } catch (error) {
+        console.log(error);
         res.status(500).send(); // Server error
     }
 });
@@ -81,6 +82,7 @@ app.post('/api/auth/signin', async (req, res) => {
             res.status(403).send(); // Not authenticated (wrong username/password)
         }
     } catch (error) {
+        console.log(error);
         res.status(500).send(); // Server error
     }
 });
@@ -88,9 +90,9 @@ app.post('/api/auth/signin', async (req, res) => {
 
 // Logout - if the session exists (verify), deletes the session
 app.post("/api/auth/signout", verify, async (req, res) => {
-    req.session.destroy(function (err) {
-        if (err) {
-            console.log(err);
+    req.session.destroy(function (error) {
+        if (error) {
+            console.log(error);
             res.status(500).send();    // Error
         } else {
             res.status(200).send();    // OK
@@ -99,7 +101,7 @@ app.post("/api/auth/signout", verify, async (req, res) => {
 });
 
 
-// Check user - checks if the user is logged in
+// Check user - checks if the user is logged in without sending status errors
 app.get("/api/auth/check", (req, res) => {
     if (req.session.user) {
         res.send("authenticated");
@@ -121,7 +123,12 @@ app.get("/api/budget", verify, async (req, res) => {
     let query = {};
     query['users.' + username] = { $exists: true };
 
-    res.json(await expenses.collection("expenses").find(query).toArray());
+    try {
+        res.json(await expenses.collection("expenses").find(query).toArray());
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(); // Server error
+    }
 });
 
 
@@ -143,7 +150,12 @@ app.get("/api/budget/:year", verify, async (req, res, next) => {
         query['users.' + username] = { $exists: true }; // Filter on logged user
         query["date"] = { $regex: `${year}` }; // Filter on selected year
 
-        res.json(await expenses.collection("expenses").find(query).toArray());
+        try {
+            res.json(await expenses.collection("expenses").find(query).toArray());
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(); // Server error
+        }
     }
 });
 
@@ -161,7 +173,12 @@ app.get("/api/budget/:year/:month", verify, async (req, res) => {
     query['users.' + username] = { $exists: true }; // Filter on logged user
     query["date"] = { $regex: `${year}-${month}` }; // Filter on selected year and month
 
-    res.json(await expenses.collection("expenses").find(query).toArray());
+    try {
+        res.json(await expenses.collection("expenses").find(query).toArray());
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(); // Server error
+    }
 });
 
 
@@ -173,8 +190,12 @@ app.get("/api/budget/:year/:month/:id", verify, async (req, res) => {
     await client.connect();
     const expenses = client.db("expenses");
 
-    let dbExpense = await expenses.collection("expenses").findOne({ "_id": new ObjectId(id) });
-    res.json(dbExpense);
+    try {
+        res.json(await expenses.collection("expenses").findOne({ "_id": new ObjectId(id) }));
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(); // Server error
+    }
 });
 
 
@@ -260,41 +281,47 @@ app.get("/api/balance", verify, async (req, res) => {
     let query = {};
     query['users.' + username] = { $exists: true };
 
-    let dbExpenses = await expenses.collection("expenses").find(query).toArray();
+    try {
+        let dbExpenses = await expenses.collection("expenses").find(query).toArray();
 
-    // Perform calculations
-    let balance = {};
-    dbExpenses.forEach(expense => {    // for each expense
-        if (expense.total_cost === "0") {   // if it's a refund
-            Object.keys(expense.users).forEach(user => {
-                if (user !== username) {
-                    if (!balance[user]) {   // if it doesn't exist, set it to 0
-                        balance[user] = 0;
-                    }
-                    balance[user] -= parseFloat(expense.users[user]);   // pay off the refund for the other user
-                }
-            });
-        } else {    // if it's a normal expense
-            if (expense.host === username) {    // if I'm host
-                Object.keys(expense.users).forEach(user => {    // everyone
-                    if (user !== username) {    // except me
+        // Perform calculations
+        let balance = {};
+        dbExpenses.forEach(expense => {    // for each expense
+            if (expense.total_cost === "0") {   // if it's a refund
+                Object.keys(expense.users).forEach(user => {
+                    if (user !== username) {
                         if (!balance[user]) {   // if it doesn't exist, set it to 0
                             balance[user] = 0;
                         }
-                        balance[user] += parseFloat(expense.users[user]);   // adds their quota to their debt with me
+                        balance[user] -= parseFloat(expense.users[user]);   // pay off the refund for the other user
                     }
                 });
-            }
-            else {  // if I'm NOT host
-                if (!balance[expense.host]) {   // if it doesn't exist, set it to 0
-                    balance[expense.host] = 0;
+            } else {    // if it's a normal expense
+                if (expense.host === username) {    // if I'm host
+                    Object.keys(expense.users).forEach(user => {    // everyone
+                        if (user !== username) {    // except me
+                            if (!balance[user]) {   // if it doesn't exist, set it to 0
+                                balance[user] = 0;
+                            }
+                            balance[user] += parseFloat(expense.users[user]);   // adds their quota to their debt with me
+                        }
+                    });
                 }
-                balance[expense.host] -= parseFloat(expense.users[username]);   // subtract my quota from host's debt with me
+                else {  // if I'm NOT host
+                    if (!balance[expense.host]) {   // if it doesn't exist, set it to 0
+                        balance[expense.host] = 0;
+                    }
+                    balance[expense.host] -= parseFloat(expense.users[username]);   // subtract my quota from host's debt with me
+                }
             }
-        }
-    });
+        });
 
-    res.json(balance);
+        res.json(balance);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(); // Server error
+    }
 });
 
 
@@ -312,7 +339,12 @@ app.get("/api/balance/:id", verify, async (req, res) => {
     query['users.' + otherUsername] = { $exists: true };
     query['host'] = { $in: [username, otherUsername] };
 
-    res.json(await expenses.collection("expenses").find(query).toArray());
+    try {
+        res.json(await expenses.collection("expenses").find(query).toArray());
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(); // Server error
+    }
 });
 
 
@@ -338,7 +370,12 @@ app.get("/api/budget/search", verify, async (req, res) => {
         { "total_cost": { $regex: queryString, $options: 'i' } }
     ];
 
-    res.json(await expenses.collection("expenses").find(query).toArray());
+    try {
+        res.json(await expenses.collection("expenses").find(query).toArray());
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(); // Server error
+    }
 });
 
 
@@ -366,7 +403,12 @@ app.get("/api/users/search", verify, async (req, res) => {
         { "surname": { $regex: queryString, $options: 'i' } },
     ];
 
-    res.json(await users.collection("users").find(query).toArray());
+    try {
+        res.json(await users.collection("users").find(query).toArray());
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(); // Server error
+    }
 });
 
 
@@ -395,13 +437,23 @@ app.get("/api/users/check/:username", async (req, res) => {
 
 // Returns the register page
 app.get('/auth/signup', async (req, res) => {
-    res.sendFile(`${__dirname}/public/register.html`);
+    try {
+        const data = await fs.readFile(`${__dirname}/public/register.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 
 // Returns the login page
 app.get('/auth/signin', async (req, res) => {
-    res.sendFile(`${__dirname}/public/login.html`);
+    try {
+        const data = await fs.readFile(`${__dirname}/public/login.html`, { encoding: `utf8` });
+        res.send(data);
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 
@@ -410,8 +462,8 @@ app.get("/budget", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/all_expenses.html`, { encoding: `utf8` });
         res.send(data);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -421,8 +473,8 @@ app.get("/budget/whoami", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/profile.html`, { encoding: `utf8` });
         res.send(data);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -432,8 +484,8 @@ app.get("/budget/:year/:month/:id", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/expense.html`, { encoding: `utf8` });
         res.send(data);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -443,8 +495,8 @@ app.get("/budget/add", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/new_expense.html`, { encoding: `utf8` });
         res.send(data);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -454,8 +506,8 @@ app.get("/balance", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/balance.html`, { encoding: `utf8` });
         res.send(data);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -465,8 +517,8 @@ app.get("/balance/:id", verify, async (req, res) => {
     try {
         const data = await fs.readFile(`${__dirname}/public/balance_id.html`, { encoding: `utf8` });
         res.send(data);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -474,10 +526,12 @@ app.get("/balance/:id", verify, async (req, res) => {
 // ############################################################
 
 
+
 // Default: all other pages redirect to index
 app.get('*', (req, res) => {
     res.redirect('/');
 });
+
 
 
 app.listen(3000); // Listen on port 3000
