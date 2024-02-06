@@ -25,15 +25,6 @@ em {
     border-top-color: rgba(150, 73, 205, 0.5);
 }
 
-.feedback {
-    margin-left: 1em;
-    color: red;
-}
-
-#logout {
-    float: right;
-}
-
 /* Button to go back to the top of the page */
 #to_top_button {
     position: fixed;
